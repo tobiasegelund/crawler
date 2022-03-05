@@ -1,0 +1,2 @@
+class AlreadyInUse(Exception):
+    pass
