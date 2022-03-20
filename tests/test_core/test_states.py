@@ -11,21 +11,27 @@ def html():
     yield BeautifulSoup(response.content, "html.parser")
 
 
+class TestImage:
+    @pytest.fixture(scope="class")
+    def state(self):
+        return Image()
+
+    def test_filter_on_size(self, state, html) -> None:
+        state.img_tags = html.select("img")
+        state.filter_on_size()
+        assert len(state.img_tags) > 0
+
+    # def test_download(self, state) -> None:
+    #     state.download()
+
+
 class TestVideo:
     @pytest.fixture(scope="class")
     def state(self):
         return Video()
 
 
-class TestImage:
+class TestAudio:
     @pytest.fixture(scope="class")
     def state(self):
-        return Image()
-
-    def test_scan(self, state, html) -> None:
-        state.scan(html=html)
-        assert len(state.a_tags) > 0
-        assert len(state.img_tags) > 0
-
-    def test_download(self) -> None:
-        pass
+        return Audio()
