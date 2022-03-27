@@ -2,7 +2,7 @@ import click
 
 from crawler.core import Crawler
 from crawler.states import ImageState
-from crawler.misc import CLISettings, ImageContextVars
+from crawler.misc import CLISettings, CrawlerContextVars, ImageContextVars
 
 
 @click.command()
@@ -22,20 +22,18 @@ def video():
 @CLISettings.directory()
 @CLISettings.level()
 @CLISettings.workers()
-# @click.option("--help", )
 def image(url: str, height: int, width: int, directory: str, level: int, workers: int):
     """
     Crawls all images within the defined criterias, e.g. width and height.
     """
-    ctx_vars = ImageContextVars(
+    ctx_vars = CrawlerContextVars(
         url=url,
-        state=ImageState,
-        height=height,
-        width=width,
-        size=height * width,
         dir_name=directory,
-        recursive_level=level,
+        level=level,
         n_workers=workers,
+        state_context=ImageContextVars(
+            state=ImageState, size=height * width, height=height, width=width
+        ),
     )
 
     crawler = Crawler(ctx_vars=ctx_vars)

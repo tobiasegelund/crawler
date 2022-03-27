@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawler.misc import ImageContextVars
+from crawler.states import ImageState
 
 
 @pytest.fixture(scope="session")
@@ -19,9 +20,7 @@ def image_context_vars():
     url = "https://en.wikipedia.org/wiki/Manchester_United_F.C."
     response = requests.get(url)
     yield ImageContextVars(
-        url=url,
-        date=datetime.date.today(),
-        recursive_level=1,
+        state=ImageState,
         width=150,
         height=150,
         size=300,

@@ -33,9 +33,10 @@ class ImageCollection:
     and find relevant meta data.
     """
 
-    def __init__(self, html: BeautifulSoup, *, ctx: ImageContextVars) -> None:
+    def __init__(self, html: BeautifulSoup, ctx: ImageContextVars, scheme: str) -> None:
         self.images: List[Image] = []
         self.ctx = ctx
+        self.scheme = scheme
 
         self.select_image_tags(html=html)
         self.extract_img_tags()
@@ -54,7 +55,7 @@ class ImageCollection:
     def extract_img_tags(self) -> None:
         for img in self.img_tags:
             attrs = img.attrs
-            src = add_http_if_missing(attrs.get("src"))
+            src = add_http_if_missing(attrs.get("src"), scheme=self.scheme)
             name = resize_file_name(extract_file_name_url(src))
             height = int(attrs.get("height", 0))
             width = int(attrs.get("width", 0))
@@ -83,5 +84,7 @@ class ImageState(State):
                 print(e)
 
     def execute(self, ctx_vars: ImageContextVars):
-        self.collection = ImageCollection(html=self.context.html, ctx=ctx_vars)
+        self.collection = ImageCollection(
+            html=self.context.html, ctx=ctx_vars, scheme=self.context.scheme
+        )
         self.download()

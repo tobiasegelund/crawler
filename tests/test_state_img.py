@@ -7,7 +7,7 @@ from .conftest import image_context_vars, html
 class TestImageCollection:
     @pytest.fixture(scope="module")
     def collection(self, html, image_context_vars):
-        return ImageCollection(html=html, ctx=image_context_vars)
+        return ImageCollection(html=html, scheme="https", ctx=image_context_vars)
 
     def test_images(self, collection):
         images = collection.images

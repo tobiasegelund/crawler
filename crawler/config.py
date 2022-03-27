@@ -1,8 +1,8 @@
-import datetime
-
-# import logger
 import os
+import logging
+import datetime
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Load .env variables
@@ -11,9 +11,13 @@ try:
 except IOError:
     pass
 
+logging.basicConfig(format="%(asctime)s | %(message)s", level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 ROOT_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
 TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%Y%m%d")
+
 
 IMAGE_TYPES = [".jpg", ".png"]
 VIDEO_TYPES = []

@@ -1,34 +1,26 @@
 from pathlib import Path
 from urllib.parse import urlparse
 
-__all__ = [
-    "add_http_if_missing",
-    "extract_file_name_url",
-    "get_hostname",
-    "resize_file_name",
-]
 
-
-def validate_url(url: str) -> bool:
-    if url[:4] == "http":
+def validate_url(url: str, scheme: str) -> bool:
+    if url[: len(scheme)] == scheme:
         return True
     return False
 
 
-def add_http_if_missing(url: str) -> str:
-    if validate_url(url):
+def add_http_if_missing(url: str, scheme: str) -> str:
+    if validate_url(url, scheme=scheme):
         return url
-    return "http:" + url
+    return scheme + ":" + url
 
 
 def extract_file_name_url(url: str) -> str:
     return url.split("/")[-1]
 
 
-def get_hostname(url: str) -> str:
-    parsed_url = urlparse(url)
-    return parsed_url.hostname
-
-
 def resize_file_name(name: str, max_length: int = 25):
     return name[:max_length]
+
+
+def construct_url_link(scheme: str, name: str, url: str) -> str:
+    return scheme + "://" + name + url

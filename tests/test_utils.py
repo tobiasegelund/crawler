@@ -3,11 +3,12 @@ from pathlib import Path
 
 from crawler.utils.format import *
 from crawler.utils.system import *
+from crawler.utils.web import *
 
 
 def test_add_http_if_missing():
     test_url = "//not_here.png"
-    assert "http://not_here.png" == add_http_if_missing(test_url)
+    assert "http://not_here.png" == add_http_if_missing(test_url, scheme="http")
 
 
 def test_extract_file_name_url():
@@ -24,9 +25,3 @@ def test_create_dir_if_not_exits():
 def test_remove_dir_if_exists():
     dir_name = Path("test_folder")
     remove_dir_if_exists(dir_name)
-
-
-def test_get_domain():
-    url = "https://en.wikipedia.org/wiki/Manchester_United_F.C."
-    domain = get_hostname(url)
-    assert domain == "en.wikipedia.org"
