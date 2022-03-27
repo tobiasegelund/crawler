@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from crawler.states.state import State
 from crawler.utils.system import create_dir_if_not_exits
+from crawler.misc import ContextVars
 from crawler.config import DEBUG_MODE
 
 
@@ -23,12 +24,10 @@ class Scraper:
 
     _state = None
 
-    def __init__(self, url: str, state: State, save_dir: Path) -> None:
+    def __init__(self, url: str, save_dir: Path) -> None:
         assert isinstance(url, str)
-        assert isinstance(state, State)
         assert isinstance(save_dir, Path)
 
-        self.transition_to(state)
         self.url = url
         self.save_dir = save_dir
 
@@ -61,10 +60,10 @@ class Scraper:
         self.save_dir = self.save_dir.joinpath(today)
         create_dir_if_not_exits(self.save_dir)
 
-    def execute(self, **kwargs):
-        if not DEBUG_MODE:
-            self.create_datestamp_dir()
+    def execute(self, ctx_vars: ContextVars):
+        self.transition_to(ctx_vars.state())
+        self.create_datestamp_dir() if not DEBUG_MODE else None
         self.request_url()
         self.validate_response()
         self.fetch_html()
-        self._state.execute(**kwargs)
+        self._state.execute(ctx_vars=ctx_vars)

@@ -1,3 +1,3 @@
-from .state_img import Image
-from .state_video import Video
-from .state_audio import Audio
+from .state_img import ImageState
+from .state_video import VideoState
+from .state_audio import AudioState

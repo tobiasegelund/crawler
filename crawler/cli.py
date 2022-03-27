@@ -1,7 +1,8 @@
 import click
 
 from crawler.core import Crawler
-from crawler.states import Image
+from crawler.states import ImageState
+from crawler.misc import CLISettings, ImageContextVars
 
 
 @click.command()
@@ -15,29 +16,30 @@ def video():
 
 
 @click.command()
-@click.option("--url", "-u", type=str, prompt="Enter url to crawl")
-@click.option(
-    "--height", "-h", type=int, default=150, help="The minimum height of the images"
-)
-@click.option(
-    "--width", "-w", type=int, default=150, help="The minimum width of the images"
-)
-@click.option(
-    "--directory", "-d", type=str, default="", help="The directory to save files in"
-)
-@click.option(
-    "--level", "-l", type=int, default=1, help="The top-down level of links to crawl"
-)
-@click.option("--workers", "-w", type=int, default=1, help="The number of CPU's to use")
-# @click.option("--help", "-h", )
+@CLISettings.url()
+@CLISettings.height()
+@CLISettings.width()
+@CLISettings.directory()
+@CLISettings.level()
+@CLISettings.workers()
+# @click.option("--help", )
 def image(url: str, height: int, width: int, directory: str, level: int, workers: int):
     """
     Crawls all images within the defined criterias, e.g. width and height.
     """
-    crawler = Crawler(
-        url=url, state=Image, level=level, dir_name=directory, n_workers=workers
+    ctx_vars = ImageContextVars(
+        url=url,
+        state=ImageState,
+        height=height,
+        width=width,
+        size=height * width,
+        dir_name=directory,
+        recursive_level=level,
+        n_workers=workers,
     )
-    crawler.execute(height=height, width=width)
+
+    crawler = Crawler(ctx_vars=ctx_vars)
+    crawler.execute()
 
 
 @click.group()

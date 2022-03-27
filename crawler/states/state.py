@@ -1,8 +1,4 @@
-from typing import Optional
 from abc import ABC, abstractmethod
-from bs4 import BeautifulSoup
-
-# from ..crawler import Crawler
 
 
 class State(ABC):
@@ -20,10 +16,6 @@ class State(ABC):
     @context.setter
     def context(self, context) -> None:
         self._context = context
-
-    @abstractmethod
-    def scan(self, **kwargs) -> None:
-        pass
 
     @abstractmethod
     def download(self) -> None:

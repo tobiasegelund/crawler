@@ -1,14 +1,13 @@
 import os
 from pathlib import Path
-from crawler.config import CRAWLER_DIR
 
-from crawler.core.utils.format import *
-from crawler.core.utils.system import *
+from crawler.utils.format import *
+from crawler.utils.system import *
 
 
-def test_add_http():
+def test_add_http_if_missing():
     test_url = "//not_here.png"
-    assert "http://not_here.png" == add_http(test_url)
+    assert "http://not_here.png" == add_http_if_missing(test_url)
 
 
 def test_extract_file_name_url():

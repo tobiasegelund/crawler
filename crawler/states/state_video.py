@@ -1,9 +1,6 @@
 from .state import State
 
 
-class Video(State):
-    def scan(self) -> None:
-        pass
-
+class VideoState(State):
     def download(self) -> None:
         pass

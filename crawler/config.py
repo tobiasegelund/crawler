@@ -1,4 +1,6 @@
 import datetime
+
+# import logger
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -9,7 +11,7 @@ try:
 except IOError:
     pass
 
-CRAWLER_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
 TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%Y%m%d")
 
@@ -17,4 +19,4 @@ IMAGE_TYPES = [".jpg", ".png"]
 VIDEO_TYPES = []
 ADUIO_TYPES = []
 
-DEBUG_MODE = True if bool(os.environ.get("CRAWLER_DEBUG_MODE")) is True else False
+DEBUG_MODE = True if bool(os.environ.get("DEBUG_MODE")) is True else False
