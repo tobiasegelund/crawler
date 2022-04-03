@@ -4,7 +4,7 @@ import pytest
 import requests
 from bs4 import BeautifulSoup
 
-from crawler.misc import ImageContextVars
+from crawler.misc import ImageContextVars, CrawlerContextVars
 from crawler.states import ImageState
 
 
@@ -25,3 +25,17 @@ def image_context_vars():
         height=150,
         size=300,
     )
+
+
+@pytest.fixture(scope="session")
+def crawler_context_vars():
+    ctx_vars = CrawlerContextVars(
+        url="https://en.wikipedia.org/wiki/Manchester_United_F.C.",
+        dir_name="",
+        level=1,
+        n_workers=1,
+        state_context=ImageContextVars(
+            state=ImageState, size=150 * 150, height=150, width=150
+        ),
+    )
+    yield ctx_vars

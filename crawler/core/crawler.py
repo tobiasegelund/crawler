@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from .scraper import Scraper
 from crawler.utils.system import create_dir_if_not_exits
 from crawler.misc import CrawlerContextVars
-from crawler.utils.web import request_url, fetch_html, unnest_links
+from crawler.utils.web import request_url, fetch_html, unnest_links, construct_website
 from crawler.config import logger
 
 
@@ -39,36 +39,45 @@ class Crawler:
     def get_domain(self) -> None:
         self.domain = self.parsed_url.hostname
 
+    def get_website(self) -> None:
+        self.website = construct_website(scheme=self.scheme, domain=self.domain)
+
     def crawl(
         self, urls: List[str], links: Dict[str, BeautifulSoup] = {}, level: int = 0
     ) -> Dict[str, BeautifulSoup]:
         if level < self.ctx_vars.level:
             for url in urls:
-                response = request_url(url=url)
-                html = fetch_html(response=response)
-                urls = unnest_links(
-                    html=html, domain_name=self.domain, scheme=self.scheme
-                )
+                if url in links.keys():
+                    continue
+                try:
+                    response = request_url(url=url)
 
-                level += 1
-                links = self.crawl(urls=urls, level=level, links=links)
+                    logger.info(f"[Crawl] {url}")
+                    html = fetch_html(response=response)
+                    urls = unnest_links(html=html, website=self.website)
 
-                links.update({url: html})
+                    level += 1
+                    links = self.crawl(urls=urls, level=level, links=links)
+                    links.update({url: html})
+                except Exception as e:
+                    logger.error(f"[Error] Crawl of {url} failed due to <{e}>")
+
         return links
 
-    def scrape(self, url: str, html: BeautifulSoup) -> None:
-        scraper = Scraper(
-            url=url, html=html, scheme=self.scheme, save_dir=self.save_dir
-        )
+    def scrape(self, html: BeautifulSoup) -> None:
+        scraper = Scraper(html=html, scheme=self.scheme, save_dir=self.save_dir)
         scraper.execute(ctx_vars=self.ctx_vars.state_context)
 
     def execute(self) -> None:
         self.get_parsed_url()
         self.get_domain()
         self.get_scheme()
+        self.get_website()
+        logger.info("[Info] Create folders")
         self.create_save_directories()
 
-        logger.info(f"Crawling of {self.ctx_vars.url} has started")
+        logger.info(f"[Info] Start crawl of <<{self.ctx_vars.url}>>")
         links = self.crawl(urls=[self.ctx_vars.url])
         for url, html in links.items():
-            self.scrape(url, html)
+            logger.info(f"[Scrape] {url}")
+            self.scrape(html=html)

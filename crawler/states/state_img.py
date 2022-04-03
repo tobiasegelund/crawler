@@ -8,11 +8,12 @@ import requests
 from .state import State
 from crawler.config import IMAGE_TYPES, DEBUG_MODE
 from crawler.misc.context import ImageContextVars
-from crawler.config import IMAGE_TYPES
+from crawler.config import IMAGE_TYPES, logger
 from crawler.utils import (
     add_http_if_missing,
     extract_file_name_url,
-    resize_file_name,
+    hash_name,
+    str_to_int,
 )
 
 
@@ -25,6 +26,9 @@ class Image:
     size: int
     height: int
     width: int
+
+    def __str__(self):
+        return f"Image<{self.name}, width: {self.width}, height: {self.height}>"
 
 
 class ImageCollection:
@@ -50,16 +54,15 @@ class ImageCollection:
 
     def select_image_tags(self, html: BeautifulSoup) -> None:
         self.img_tags = html.select("img")
-        # self.picture_tags = html.select("picture")
 
     def extract_img_tags(self) -> None:
         for img in self.img_tags:
             attrs = img.attrs
             src = add_http_if_missing(attrs.get("src"), scheme=self.scheme)
-            name = resize_file_name(extract_file_name_url(src))
-            height = int(attrs.get("height", 0))
-            width = int(attrs.get("width", 0))
-            size = int(attrs.get("size", 0))
+            name = hash_name(extract_file_name_url(src))
+            height = str_to_int(attrs.get("height", "0"))
+            width = str_to_int(attrs.get("width", "0"))
+            size = str_to_int(attrs.get("size", "0"))
 
             if ((self.ctx.height <= height) and (self.ctx.width <= width)) or (
                 self.ctx.size <= size
@@ -68,23 +71,21 @@ class ImageCollection:
                     Image(src=src, name=name, height=height, width=width, size=size)
                 )
 
-    # def extract_picture_tag(self) -> None:
-    #     self.images = None
-
 
 class ImageState(State):
     def download(self) -> None:
-        for img in tqdm(self.collection):
+        for img in self.collection:
             try:
                 content = requests.get(img.src).content
                 with open(self.context.save_dir.joinpath(img.name), "wb") as f:
                     f.write(content)
+                logger.info(f"[Download] {img} downloaded successfully")
             except Exception as e:
-                # TODO: Change to logger
-                print(e)
+                logger.error(f"[Error] Failed download of {img} due to <{e}>")
 
     def execute(self, ctx_vars: ImageContextVars):
         self.collection = ImageCollection(
             html=self.context.html, ctx=ctx_vars, scheme=self.context.scheme
         )
+        logger.info(f"[Info] {len(self.collection)} images to download")
         self.download()

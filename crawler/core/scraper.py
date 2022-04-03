@@ -23,15 +23,11 @@ class Scraper:
 
     _state = None
 
-    def __init__(
-        self, url: str, html: BeautifulSoup, scheme: str, save_dir: Path
-    ) -> None:
-        assert isinstance(url, str)
+    def __init__(self, html: BeautifulSoup, scheme: str, save_dir: Path) -> None:
         assert isinstance(html, BeautifulSoup)
         assert isinstance(scheme, str)
         assert isinstance(save_dir, Path)
 
-        self.url = url
         self.html = html
         self.scheme = scheme
         self.save_dir = save_dir
