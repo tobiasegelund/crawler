@@ -1,12 +1,11 @@
 ## Crawler
 
-A CLI program to download images, videos or audio files from a website link. The program
+A CLI program to download image, video or audio files from a website url. The program
 offers the option to crawl deeper within the domain, but only of the specified domain. Furhermore,
-the program offers to the option to render the website in order to capture javascript related
+the program offers the option to render the website in order to capture javascript related
 content, but it does increase the speed of scraping.
 
-Currently, the program a beta version and capture all possible scenerios. Thus, bare with
-issues to some websites.
+Currently, the program is a beta version and cannot capture all possible scenerios.
 
 ### Download
 ```console
