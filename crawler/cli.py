@@ -19,16 +19,26 @@ def video():
 @CLISettings.url()
 @CLISettings.height()
 @CLISettings.width()
+@CLISettings.js()
 @CLISettings.directory()
 @CLISettings.level()
 @CLISettings.workers()
-def image(url: str, height: int, width: int, directory: str, level: int, workers: int):
+def image(
+    url: str,
+    height: int,
+    width: int,
+    js: bool,
+    directory: str,
+    level: int,
+    workers: int,
+):
     """
     Crawls all images within the defined criterias, e.g. width and height.
     """
     ctx_vars = CrawlerContextVars(
         url=url,
         dir_name=directory,
+        js=js,
         level=level,
         n_workers=workers,
         state_context=ImageContextVars(

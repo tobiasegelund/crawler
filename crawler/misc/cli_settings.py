@@ -27,6 +27,16 @@ class CLISettings:
         )
 
     @classmethod
+    def js(cls):
+        return click.option(
+            "--js",
+            type=bool,
+            default=False,
+            is_flag=True,
+            help="Render and scrape javascript content. It will increase the speed of scraping",
+        )
+
+    @classmethod
     def directory(cls):
         return click.option(
             "--directory",

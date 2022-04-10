@@ -31,6 +31,7 @@ class CrawlerContextVars:
 
     url: str
     level: int
+    js: bool
     dir_name: str
     n_workers: int
     state_context: StateContextVars

@@ -1,9 +1,9 @@
 import datetime
+from typing import Union
 from pathlib import Path
 
-import requests
-
 from bs4 import BeautifulSoup
+from requests_html import HTML
 from crawler.states.state import State
 from crawler.utils.system import create_dir_if_not_exits
 from crawler.misc import StateContextVars
@@ -23,8 +23,10 @@ class Scraper:
 
     _state = None
 
-    def __init__(self, html: BeautifulSoup, scheme: str, save_dir: Path) -> None:
-        assert isinstance(html, BeautifulSoup)
+    def __init__(
+        self, html: Union[BeautifulSoup, HTML], scheme: str, save_dir: Path
+    ) -> None:
+        assert isinstance(html, (BeautifulSoup, HTML))
         assert isinstance(scheme, str)
         assert isinstance(save_dir, Path)
 

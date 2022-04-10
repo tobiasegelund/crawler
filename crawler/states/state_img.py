@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union
 
-from bs4 import BeautifulSoup
-from tqdm import tqdm
 import requests
+from bs4 import BeautifulSoup
+from requests_html import HTML
 
 from .state import State
 from crawler.config import IMAGE_TYPES, DEBUG_MODE
@@ -26,9 +26,10 @@ class Image:
     size: int
     height: int
     width: int
+    alt: str
 
     def __str__(self):
-        return f"Image<{self.name}, width: {self.width}, height: {self.height}>"
+        return f"Image<{self.name}, alt: {self.alt}, width: {self.width}, height: {self.height}>"
 
 
 class ImageCollection:
@@ -52,14 +53,18 @@ class ImageCollection:
         for img in self.images:
             yield img
 
-    def select_image_tags(self, html: BeautifulSoup) -> None:
-        self.img_tags = html.select("img")
+    def select_image_tags(self, html: Union[BeautifulSoup, HTML]) -> None:
+        if isinstance(html, HTML):
+            self.img_tags = html.find("img")
+        else:
+            self.img_tags = html.select("img")
 
     def extract_img_tags(self) -> None:
         for img in self.img_tags:
             attrs = img.attrs
             src = add_http_if_missing(attrs.get("src"), scheme=self.scheme)
             name = hash_name(extract_file_name_url(src))
+            alt = attrs.get("alt", "no-capture")
             height = str_to_int(attrs.get("height", "0"))
             width = str_to_int(attrs.get("width", "0"))
             size = str_to_int(attrs.get("size", "0"))
@@ -68,7 +73,14 @@ class ImageCollection:
                 self.ctx.size <= size
             ):
                 self.images.append(
-                    Image(src=src, name=name, height=height, width=width, size=size)
+                    Image(
+                        src=src,
+                        name=name,
+                        height=height,
+                        width=width,
+                        size=size,
+                        alt=alt,
+                    )
                 )
 
 
