@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Union, Any, Dict
 
 import requests
 from bs4 import BeautifulSoup
@@ -59,41 +59,61 @@ class ImageCollection:
         else:
             self.img_tags = html.select("img")
 
+    def get_src_url(self, attrs: Dict[str, Any]) -> Union[None, str]:
+        src_codes = ["src", "data-src"]
+        for code in src_codes:
+            src = attrs.get(code, None)
+            if src is not None:
+                return src
+        return None
+
     def extract_img_tags(self) -> None:
         for img in self.img_tags:
-            attrs = img.attrs
-            src = add_http_if_missing(attrs.get("src"), scheme=self.scheme)
-            name = hash_name(extract_file_name_url(src))
-            alt = attrs.get("alt", "no-capture")
-            height = str_to_int(attrs.get("height", "0"))
-            width = str_to_int(attrs.get("width", "0"))
-            size = str_to_int(attrs.get("size", "0"))
+            try:
+                attrs = img.attrs
+                src = self.get_src_url(attrs)
+                if src is None:
+                    continue
+                src = add_http_if_missing(src, scheme=self.scheme)
+                name = hash_name(extract_file_name_url(src))
+                alt = attrs.get("alt", "no-capture")
+                height = str_to_int(attrs.get("height", "0"))
+                width = str_to_int(attrs.get("width", "0"))
+                size = str_to_int(attrs.get("size", "0"))
 
-            if ((self.ctx.height <= height) and (self.ctx.width <= width)) or (
-                self.ctx.size <= size
-            ):
-                self.images.append(
-                    Image(
-                        src=src,
-                        name=name,
-                        height=height,
-                        width=width,
-                        size=size,
-                        alt=alt,
+                if ((self.ctx.height <= height) and (self.ctx.width <= width)) or (
+                    self.ctx.size <= size
+                ):
+                    self.images.append(
+                        Image(
+                            src=src,
+                            name=name,
+                            height=height,
+                            width=width,
+                            size=size,
+                            alt=alt,
+                        )
                     )
-                )
+            except Exception as e:
+                logger.warning(f"[Error] {e}")
 
 
 class ImageState(State):
     def download(self) -> None:
+        succes_ctr = 0
         for img in self.collection:
             try:
                 content = requests.get(img.src).content
                 with open(self.context.save_dir.joinpath(img.name), "wb") as f:
                     f.write(content)
                 logger.info(f"[Download] {img} downloaded successfully")
+                succes_ctr += 1
             except Exception as e:
-                logger.error(f"[Error] Failed download of {img} due to <{e}>")
+                logger.error(f"[Error] Failed download of {img} due to <{str(e)[:50]}>")
+
+        logger.info(
+            f"[INFO] {succes_ctr} out of {len(self.collection)} images were downloaded successfully"
+        )
 
     def execute(self, ctx_vars: ImageContextVars):
         self.collection = ImageCollection(

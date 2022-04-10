@@ -14,7 +14,9 @@ def hash_name(name: str) -> str:
 def add_http_if_missing(url: str, scheme: str) -> str:
     if validate_url(url, scheme=scheme):
         return url
-    return scheme + ":" + url
+    elif url[:2] == "//":
+        return scheme + ":" + url
+    return scheme + "://" + url
 
 
 def extract_file_name_url(url: str) -> str:

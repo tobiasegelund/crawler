@@ -20,6 +20,11 @@ class ImageContextVars(StateContextVars):
 
 
 @dataclass
+class VideoContextVars(StateContextVars):
+    size: int
+
+
+@dataclass
 class CrawlerContextVars:
     """
     Args:
