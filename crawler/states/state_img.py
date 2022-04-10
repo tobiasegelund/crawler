@@ -6,14 +6,14 @@ from bs4 import BeautifulSoup
 from requests_html import HTML
 
 from .state import State
-from crawler.config import IMAGE_TYPES, DEBUG_MODE
+from crawler.config import logger, DEBUG_MODE
 from crawler.misc.context import ImageContextVars
-from crawler.config import IMAGE_TYPES, logger
 from crawler.utils import (
     add_http_if_missing,
     extract_file_name_url,
     hash_name,
     str_to_int,
+    get_src_url,
 )
 
 
@@ -59,19 +59,11 @@ class ImageCollection:
         else:
             self.img_tags = html.select("img")
 
-    def get_src_url(self, attrs: Dict[str, Any]) -> Union[None, str]:
-        src_codes = ["src", "data-src"]
-        for code in src_codes:
-            src = attrs.get(code, None)
-            if src is not None:
-                return src
-        return None
-
     def extract_img_tags(self) -> None:
         for img in self.img_tags:
             try:
                 attrs = img.attrs
-                src = self.get_src_url(attrs)
+                src = get_src_url(attrs)
                 if src is None:
                     continue
                 src = add_http_if_missing(src, scheme=self.scheme)

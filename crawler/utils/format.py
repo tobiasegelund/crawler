@@ -1,6 +1,14 @@
 import hashlib
 
 
+def prepare_url(url: str) -> str:
+    if url[:3] == "www":
+        return "https://" + url
+    elif url[:4] == "http":
+        return url
+    return "https://www." + url
+
+
 def validate_url(url: str, scheme: str) -> bool:
     if url[: len(scheme)] == scheme:
         return True

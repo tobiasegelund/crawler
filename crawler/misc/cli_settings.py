@@ -4,7 +4,9 @@ import click
 class CLISettings:
     @classmethod
     def url(cls):
-        return click.option("--url", "-u", type=str, prompt="Enter url to crawl")
+        return click.option(
+            "--url", "-u", type=str, help="[Required] Website to scrape."
+        )
 
     @classmethod
     def height(cls):
@@ -13,7 +15,7 @@ class CLISettings:
             "-h",
             type=int,
             default=150,
-            help="The minimum height of the images",
+            help="[Optional] Minimum height of the images. Default set to 150px.",
         )
 
     @classmethod
@@ -23,17 +25,18 @@ class CLISettings:
             "-w",
             type=int,
             default=150,
-            help="The minimum width of the images",
+            help="[Optional] Minimum width of the images. Default set to 150px.",
         )
 
     @classmethod
-    def js(cls):
+    def render(cls):
         return click.option(
-            "--js",
+            "-r",
+            "--render",
             type=bool,
             default=False,
             is_flag=True,
-            help="Render and scrape javascript content. It will increase the speed of scraping",
+            help="[Optional] Render javascript content. Increases the speed of crawl and scrape.",
         )
 
     @classmethod
@@ -43,7 +46,7 @@ class CLISettings:
             "-d",
             type=str,
             default="",
-            help="The directory to save files in",
+            help="[Optional] Choose directory to save the files. Default is set to domain name.",
         )
 
     @classmethod
@@ -53,11 +56,10 @@ class CLISettings:
             "-l",
             type=int,
             default=1,
-            help="The top-down level of links to crawl",
-        )
-
-    @classmethod
-    def workers(cls):
-        return click.option(
-            "--workers", "-w", type=int, default=1, help="The number of CPU's to use"
+            help="""[Optional] Top-down level in links to crawl. Default set to level 1,
+            i.e. scrape only the defined url. Level 2 crawl all related links recursively
+            from the specified URL within the domain name and scrape the relevant files on
+            those pages. Increase in level searches the domain name heuristically, though it
+            increases the computation time a lot.
+            """,
         )

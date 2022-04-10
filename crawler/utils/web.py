@@ -1,6 +1,6 @@
 import asyncio
 import nest_asyncio
-from typing import List, Union
+from typing import List, Union, Dict, Any
 
 import requests
 from requests_html import HTMLResponse, HTML, AsyncHTMLSession
@@ -99,3 +99,12 @@ def eval_domain_name(url: str, website: str) -> int:
 
 def construct_website(scheme: str, domain: str) -> str:
     return scheme + "://" + domain
+
+
+def get_src_url(attrs: Dict[str, Any]) -> Union[None, str]:
+    src_codes = ["src", "data-src"]
+    for code in src_codes:
+        src = attrs.get(code, None)
+        if src is not None:
+            return src
+    return None

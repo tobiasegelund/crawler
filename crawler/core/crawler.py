@@ -17,8 +17,7 @@ class Crawler:
     Crawls a website for links recursively
 
     Args:
-        ctx_vars: Context variables for the crawler class, including the url, filters
-            n-workers etc.
+        ctx_vars: Context variables for the crawler class
     """
 
     def __init__(self, ctx_vars):
@@ -28,7 +27,8 @@ class Crawler:
 
     def create_save_directories(self) -> None:
         self.save_dir = Path().joinpath(self.ctx_vars.dir_name)
-        self.save_dir = self.save_dir.joinpath(self.domain)
+        if self.ctx_vars.dir_name == "":
+            self.save_dir = self.save_dir.joinpath(self.domain)
         create_dir_if_not_exits(self.save_dir)
 
     def get_parsed_url(self):
@@ -54,7 +54,7 @@ class Crawler:
                 if url in links.keys():
                     continue
                 try:
-                    response = request_url(url=url, render=self.ctx_vars.js)
+                    response = request_url(url=url, render=self.ctx_vars.render)
 
                     logger.info(f"[Crawl] {url}")
                     html = fetch_html(response=response)
@@ -80,7 +80,7 @@ class Crawler:
         logger.info("[Info] Create folders")
         self.create_save_directories()
 
-        logger.info(f"[Info] Start crawl of <<{self.ctx_vars.url}>>")
+        logger.info(f"[Info] Start crawl of <{self.ctx_vars.url}>")
         links = self.crawl(urls=[self.ctx_vars.url])
         for url, html in links.items():
             logger.info(f"[Scrape] {url}")

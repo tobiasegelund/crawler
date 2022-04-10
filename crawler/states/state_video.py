@@ -13,6 +13,7 @@ from crawler.utils import (
     extract_file_name_url,
     hash_name,
     str_to_int,
+    get_src_url,
 )
 
 
@@ -54,19 +55,11 @@ class VideoCollection:
         else:
             self.video_tags = html.select("video")
 
-    def get_src_url(self, attrs: Dict[str, Any]) -> Union[str, None]:
-        src_codes = ["src", "data-src"]
-        for code in src_codes:
-            src = attrs.get(code, None)
-            if src is not None:
-                return src
-        return None
-
     def extract_video_tags(self) -> None:
         for video in self.video_tags:
             try:
                 attrs = video.attrs
-                src = self.get_src_url(attrs)
+                src = get_src_url(attrs)
                 if src is None:
                     continue
                 src = add_http_if_missing(src, scheme=self.scheme)

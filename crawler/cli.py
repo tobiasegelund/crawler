@@ -1,46 +1,51 @@
 import click
+import sys
 
 from crawler.core import Crawler
 from crawler.states import ImageState
 from crawler.misc import CLISettings, CrawlerContextVars, ImageContextVars
+from crawler.utils import prepare_url
 
 
 @click.command()
 def audio():
-    pass
+    """Scrape audio files"""
+    raise NotImplemented("Under implementation")
 
 
 @click.command()
 def video():
-    pass
+    """Scrape video files"""
+    raise NotImplemented("Under implementation")
 
 
 @click.command()
 @CLISettings.url()
 @CLISettings.height()
 @CLISettings.width()
-@CLISettings.js()
+@CLISettings.render()
 @CLISettings.directory()
 @CLISettings.level()
-@CLISettings.workers()
 def image(
     url: str,
     height: int,
     width: int,
-    js: bool,
+    render: bool,
     directory: str,
     level: int,
-    workers: int,
 ):
-    """
-    Crawls all images within the defined criterias, e.g. width and height.
-    """
+    if url is None:
+        print("Must specify URL to scrape by using --url or -u arguments")
+        sys.exit()
+
+    """Scrape image files"""
+    url = prepare_url(url)
+
     ctx_vars = CrawlerContextVars(
         url=url,
         dir_name=directory,
-        js=js,
+        render=render,
         level=level,
-        n_workers=workers,
         state_context=ImageContextVars(
             state=ImageState, size=height * width, height=height, width=width
         ),

@@ -25,18 +25,21 @@ class VideoContextVars(StateContextVars):
 
 
 @dataclass
+class AudioContextVars(StateContextVars):
+    size: int
+
+
+@dataclass
 class CrawlerContextVars:
     """
     Args:
         url: The website to crawl
         level: The downward level of recursive search
         save_dir: The directory to save
-        n_workers: Number of CPU's to use
     """
 
     url: str
     level: int
-    js: bool
+    render: bool
     dir_name: str
-    n_workers: int
     state_context: StateContextVars

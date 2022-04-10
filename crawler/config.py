@@ -23,7 +23,7 @@ TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%Y%m%d")
 
 
-IMAGE_TYPES = [".jpg", ".png"]
+IMAGE_EXTENSIONS = (".jpg", ".gif", ".png", ".bmp", ".svg", ".webp", ".ico")
 VIDEO_TYPES = []
 ADUIO_TYPES = []
 
