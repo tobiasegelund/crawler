@@ -1,5 +1,5 @@
-import click
 import sys
+import click
 
 from crawler.core import Crawler
 from crawler.states import ImageState
@@ -10,13 +10,13 @@ from crawler.utils import prepare_url
 @click.command()
 def audio():
     """Scrape audio files"""
-    raise NotImplemented("Under implementation")
+    print("Under implementation - will be available in future updates")
 
 
 @click.command()
 def video():
     """Scrape video files"""
-    raise NotImplemented("Under implementation")
+    print("Under implementation - will be available in future updates")
 
 
 @click.command()
@@ -34,12 +34,14 @@ def image(
     directory: str,
     level: int,
 ):
+    """Scrape image files"""
     if url is None:
         print("Must specify URL to scrape by using --url or -u arguments")
         sys.exit()
 
     """Scrape image files"""
     url = prepare_url(url)
+    size = int((height + width) / 1.5)
 
     ctx_vars = CrawlerContextVars(
         url=url,
@@ -47,7 +49,7 @@ def image(
         render=render,
         level=level,
         state_context=ImageContextVars(
-            state=ImageState, size=height * width, height=height, width=width
+            state=ImageState, size=size, height=height, width=width
         ),
     )
 

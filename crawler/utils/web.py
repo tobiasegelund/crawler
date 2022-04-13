@@ -1,3 +1,4 @@
+import re
 import asyncio
 import nest_asyncio
 from typing import List, Union, Dict, Any
@@ -8,6 +9,7 @@ from bs4 import BeautifulSoup
 
 from crawler.config import HEADERS
 from .format import construct_url_link
+from .decorators import retry
 
 
 def request_url(
@@ -102,9 +104,22 @@ def construct_website(scheme: str, domain: str) -> str:
 
 
 def get_src_url(attrs: Dict[str, Any]) -> Union[None, str]:
-    src_codes = ["src", "data-src"]
+    src_codes = ["src", "data-src", "srcset", "data-srcset"]
     for code in src_codes:
         src = attrs.get(code, None)
         if src is not None:
             return src
     return None
+
+
+def evaluate_src_url(src: str):
+    if len(list_of_src := src.split(",")) > 1:
+        largest_src = list_of_src[-1]
+        return largest_src.split()[0]  # [url, width]
+    return src
+
+
+@retry(retries=1)
+def download_content(url: str) -> bytes:
+    content = requests.get(url).content
+    return content

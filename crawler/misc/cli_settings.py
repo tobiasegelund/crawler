@@ -15,7 +15,7 @@ class CLISettings:
             "-h",
             type=int,
             default=150,
-            help="[Optional] Minimum height of the images. Default set to 150px.",
+            help="[Optional] Minimum height of the images. Default set to 150. Note, by setting it to -1 disables size restrictions.",
         )
 
     @classmethod
@@ -25,7 +25,7 @@ class CLISettings:
             "-w",
             type=int,
             default=150,
-            help="[Optional] Minimum width of the images. Default set to 150px.",
+            help="[Optional] Minimum width of the images. Default set to 150. Note, by setting it to -1 disables size restrictions.",
         )
 
     @classmethod

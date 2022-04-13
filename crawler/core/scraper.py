@@ -53,5 +53,5 @@ class Scraper:
 
     def execute(self, ctx_vars: StateContextVars):
         self.transition_to(ctx_vars.state())
-        self.create_datestamp_dir() if not DEBUG_MODE else None
+        # self.create_datestamp_dir()
         self._state.execute(ctx_vars=ctx_vars)

@@ -1,15 +1,32 @@
 from time import sleep
+from typing import Tuple
+
+from crawler.config import logger
 import requests.exceptions
 
 
-def retry(retries: int = 1):
-    def _inner(func, *args, **kwargs):
-        for _ in retries:
-            try:
-                output = func(*args, **kwargs)
-            except (requests.exceptions.ConnectionError):
-                sleep(1)
-                raise requests.exceptions.ConnectionError()
-        return output
+def retry(
+    retries: int = 3,
+    sleep_time: float = 0.5,
+    exceptions: Tuple[Exception] = (requests.exceptions.ConnectionError),
+):
+    def inner(func):
+        def _inner(*args, **kwargs):
 
-    return _inner
+            if retries > 0:
+                for _ in range(retries):
+                    try:
+                        output = func(*args, **kwargs)
+                        return output
+                    except exceptions:
+                        logger.warning(
+                            f"[Warning] Failed to establish connection - retry {_ + 1} / {retries}"
+                        )
+                        sleep(sleep_time)
+            else:
+                output = func(*args, **kwargs)
+                return output
+
+        return _inner
+
+    return inner

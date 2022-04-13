@@ -22,9 +22,10 @@ ROOT_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
 TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%Y%m%d")
 
+IMAGE_TAGS = ("img", "source", "picture")
 
 IMAGE_EXTENSIONS = (".jpg", ".gif", ".png", ".bmp", ".svg", ".webp", ".ico")
-VIDEO_TYPES = []
-ADUIO_TYPES = []
+VIDEO_EXTENSION = ()
+ADUIO_EXTENTIONS = ()
 
 DEBUG_MODE = True if bool(os.environ.get("DEBUG_MODE")) is True else False
