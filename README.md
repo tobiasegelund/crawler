@@ -3,7 +3,7 @@
 A CLI program to download image, video or audio files from a website url. The program
 offers the option to crawl deeper within the domain, but only of the specified domain. Furhermore,
 the program offers the option to render the website in order to capture javascript related
-content, but it does increase the speed of scraping.
+content with the expense of increase in the crawling speed.
 
 Currently, the program is a beta version and cannot capture all possible scenerios.
 

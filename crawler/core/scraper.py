@@ -7,7 +7,6 @@ from requests_html import HTML
 from crawler.states.state import State
 from crawler.utils.system import create_dir_if_not_exits
 from crawler.misc import StateContextVars
-from crawler.config import DEBUG_MODE
 
 
 class Scraper:

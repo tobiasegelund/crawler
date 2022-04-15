@@ -11,7 +11,7 @@ def retry(
     exceptions: Tuple[Exception] = (requests.exceptions.ConnectionError),
 ):
     def inner(func):
-        def _inner(*args, **kwargs):
+        def wrapper(*args, **kwargs):
 
             if retries > 0:
                 for _ in range(retries):
@@ -27,6 +27,6 @@ def retry(
                 output = func(*args, **kwargs)
                 return output
 
-        return _inner
+        return wrapper
 
     return inner

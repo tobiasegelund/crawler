@@ -5,7 +5,7 @@ class CLISettings:
     @classmethod
     def url(cls):
         return click.option(
-            "--url", "-u", type=str, help="[Required] Website to scrape."
+            "--url", "-u", type=str, help="[Required] Website to scrape"
         )
 
     @classmethod
@@ -36,7 +36,8 @@ class CLISettings:
             type=bool,
             default=False,
             is_flag=True,
-            help="[Optional] Render javascript content. Increases the speed of crawl and scrape.",
+            help="""[Optional] Render javascript content. Default set to False. Flag by -r or --render
+            to use the feature. Note that it increases the speed of crawl and scrape.""",
         )
 
     @classmethod
@@ -61,5 +62,19 @@ class CLISettings:
             from the specified URL within the domain name and scrape the relevant files on
             those pages. Increase in level searches the domain name heuristically, though it
             increases the computation time a lot.
+            """,
+        )
+
+    @classmethod
+    def workers(cls):
+        return click.option(
+            "--workers",
+            "-w",
+            type=int,
+            default=1,
+            help="""[Optional] Number of CPU cores to use. Default set to 1. Maximum of one
+            CPU core per url to avoid DDoS attack on servers. Thus, urls to crawl must be greater
+            than or equal to the number of workers in use. Greater number of workers than
+            urls will not enchance any speed of crawling.
             """,
         )

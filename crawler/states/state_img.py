@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from requests_html import HTML
 
 from .state import State
-from crawler.config import logger, IMAGE_TAGS, DEBUG_MODE
+from crawler.config import logger, IMAGE_TAGS
 from crawler.misc.context import ImageContextVars
 from crawler.utils import (
     add_http_if_missing,

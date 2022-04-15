@@ -76,8 +76,20 @@ class Crawler:
         self.get_parsed_url()
         self.get_domain()
         self.get_scheme()
+        if self.ctx_vars.render:
+            logger.info(
+                f"[Info] Render javascript content - Be aware of increase in speed of crawl"
+            )
+        if self.ctx_vars.dir_name != "":
+            logger.info(
+                f"[Info] Downloaded files are written to folder <{self.ctx_vars.dir_name}>"
+            )
+        else:
+            logger.info(
+                f"[Info] Downloaded files are written to folder <{self.domain}>"
+            )
+
         self.get_website()
-        logger.info("[Info] Create folders")
         self.create_save_directories()
 
         logger.info(f"[Info] Start crawl of <{self.ctx_vars.url}>")

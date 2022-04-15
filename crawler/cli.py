@@ -1,10 +1,10 @@
 import sys
 import click
 
-from crawler.core import Crawler
 from crawler.states import ImageState
-from crawler.misc import CLISettings, CrawlerContextVars, ImageContextVars
-from crawler.utils import prepare_url
+from crawler.misc import CLISettings, ImageContextVars
+from crawler.config import logger
+from crawler.main import crawl_site
 
 
 @click.command()
@@ -34,32 +34,38 @@ def image(
     directory: str,
     level: int,
 ):
-    """Scrape image files"""
     if url is None:
-        print("Must specify URL to scrape by using --url or -u arguments")
+        logger.info("[Error] Must specify URL to scrape by using --url or -u arguments")
         sys.exit()
 
-    """Scrape image files"""
-    url = prepare_url(url)
-    size = int((height + width) / 1.5)
+    if height == -1 or width == -1:
+        logger.info(f"[Info] Size restrictions are disabled")
+    else:
+        logger.info(f"[Info] Minimum height of images to scrape is {height}")
+        logger.info(f"[Info] Minimum width of images to scrape is {width}")
+        logger.info("[Info] Set height to -1 by -h -1 to disable size restrictions")
 
-    ctx_vars = CrawlerContextVars(
-        url=url,
-        dir_name=directory,
-        render=render,
-        level=level,
-        state_context=ImageContextVars(
-            state=ImageState, size=size, height=height, width=width
-        ),
+    """Scrape image files"""
+    size = int((height + width) / 1.5)
+    img_context = ImageContextVars(
+        state=ImageState, size=size, height=height, width=width
     )
 
-    crawler = Crawler(ctx_vars=ctx_vars)
-    crawler.execute()
+    crawl_site(
+        url=url,
+        level=level,
+        render=render,
+        save_folder=directory,
+        state_context=img_context,
+    )
 
 
 @click.group()
 def main():
-    """CLI interface for the crawler program"""
+    """A CLI program to download image, video or audio files from a website url. The program
+    offers the option to crawl deeper within the domain, but only of the specified domain. Furhermore,
+    the program offers the option to render the website in order to capture javascript related
+    content with the expense of increase in the crawling speed."""
     pass
 
 
