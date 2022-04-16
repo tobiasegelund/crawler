@@ -21,3 +21,7 @@ make install
 ```console
 crawler [image, video, audio] --url https://www.dr.dk
 ```
+Or
+```console
+python3 crawler [image, video, audio] --url https://www.dr.dk
+```
