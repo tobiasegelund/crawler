@@ -1,10 +1,8 @@
-import sys
 from typing import List
 
 from crawler.utils import prepare_url
 from crawler.core import Crawler
 from crawler.misc import CrawlerContextVars, StateContextVars
-from crawler.config import logger
 
 
 def crawl_site(
@@ -76,7 +74,7 @@ def crawl_sites(
         save_folder, str: The name of the folder to save the files in
         state_context, StateContextVars: A class to define the restriction of files to scrape
         n_workers, int: The number of CPU cores to use and run in parallel. A maximum of one
-            CPU will be devoted to one site to avoid any DoS attacks from the program.
+            worker will be devoted to each site to avoid any DoS attacks from the program.
 
     Usage:
         >>> crawl_sites(urls=[dr.dk, tv2.dk], level=1, render=False, save_folder="", state_context=ImageContext())

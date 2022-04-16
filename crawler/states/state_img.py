@@ -1,7 +1,8 @@
+import re
+import base64
 from dataclasses import dataclass
 from typing import List, Union, Any, Dict
 
-import requests
 from bs4 import BeautifulSoup
 from requests_html import HTML
 
@@ -114,8 +115,13 @@ class ImageState(State):
         succes_ctr = 0
         for img in self.collection:
             try:
-                content = download_content(url=img.src)
-                with open(self.context.save_dir.joinpath(img.name), "wb") as f:
+                if len(uri := re.findall(r"data:image/jpeg;base64,(.*)", img.src)) > 0:
+                    encoded = uri[0]
+                    content = base64.b64decode(str(encoded))
+                else:
+                    content = download_content(url=img.src)
+
+                with open(self.context.save_dir.joinpath(img.name + ".jpg"), "wb") as f:
                     f.write(content)
                 logger.info(f"[Download] {img} downloaded successfully")
                 succes_ctr += 1

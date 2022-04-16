@@ -82,17 +82,17 @@ class Crawler:
             )
         if self.ctx_vars.dir_name != "":
             logger.info(
-                f"[Info] Downloaded files are written to folder <{self.ctx_vars.dir_name}>"
+                f"[Info] Downloaded files are written to folder >>> {self.ctx_vars.dir_name} <<<"
             )
         else:
             logger.info(
-                f"[Info] Downloaded files are written to folder <{self.domain}>"
+                f"[Info] Downloaded files are written to folder >>> {self.domain} <<<"
             )
 
         self.get_website()
         self.create_save_directories()
 
-        logger.info(f"[Info] Start crawl of <{self.ctx_vars.url}>")
+        logger.info(f"[Info] Start crawl of >>> {self.ctx_vars.url} <<<")
         links = self.crawl(urls=[self.ctx_vars.url])
         for url, html in links.items():
             logger.info(f"[Scrape] {url}")

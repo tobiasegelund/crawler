@@ -50,6 +50,7 @@ def fetch_html(
 
 
 def fetch_html_raw(response: requests.models.Response) -> BeautifulSoup:
+    # lxml parser instead of html.parser?
     return BeautifulSoup(response.content, "html.parser")
 
 
@@ -113,6 +114,11 @@ def get_src_url(attrs: Dict[str, Any]) -> Union[None, str]:
 
 
 def evaluate_src_url(src: str):
+    # TODO: Find generic solution on encoded images and how to handle those
+    # Hotfix
+    if bool(re.search(r"data:image/jpeg;base64,(.*)", src)):
+        return src
+
     if len(list_of_src := src.split(",")) > 1:
         largest_src = list_of_src[-1]
         return largest_src.split()[0]  # [url, width]
