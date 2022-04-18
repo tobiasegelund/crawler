@@ -86,13 +86,13 @@ class VideoCollection:
 
 
 class VideoState(State):
-    def download(self) -> None:
+    def download(self, max_size: int) -> None:
         succes_ctr = 0
         for video in self.collection:
             try:
                 response = requests.get(video.src, stream=True, timeout=10)
                 total_size_in_bytes = int(response.headers.get("content-length", 0))
-                if (total_size_in_mb := total_size_in_bytes * 10**-6) > 50:
+                if (total_size_in_mb := total_size_in_bytes * 10**-6) > max_size:
                     logger.info(
                         "[Info] Skipping {video.src} ({total_size_in_mb} MB) because video exceeds the maximum file size of 50 MB - Raise the maximum bar to capture it by --size argument"
                     )
@@ -129,4 +129,4 @@ class VideoState(State):
             html=self.context.html, ctx=ctx_vars, website=self.context.website
         )
         logger.info(f"[Info] {len(self.collection)} videos to download")
-        self.download()
+        self.download(max_size=ctx_vars.size)
