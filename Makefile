@@ -7,5 +7,8 @@ develop:
 install:
 		env/bin/python setup.py install
 
+test:
+	pytest tests/
+
 clean:
 	rm -rf env
