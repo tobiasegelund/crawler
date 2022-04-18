@@ -120,6 +120,8 @@ def evaluate_src_url(src: str):
         return src
     elif bool(re.search(r"data:image/gif;base64,(.*)", src)):
         return src
+    elif bool(re.search(r"data:image/png;base64,(.*)", src)):
+        return src
     elif len(list_of_src := src.split(",")) > 1:
         largest_src = list_of_src[-1]
         return largest_src.split()[0]  # [url, width]

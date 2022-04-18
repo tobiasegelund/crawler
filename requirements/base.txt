@@ -21,6 +21,7 @@ executing==0.8.3
 fake-useragent==0.1.11
 flake8==4.0.1
 h11==0.13.0
+html5lib==1.1
 idna==3.3
 importlib-metadata==4.11.3
 iniconfig==1.1.1
@@ -80,6 +81,7 @@ typing_extensions==4.1.1
 urllib3==1.26.8
 w3lib==1.22.0
 wcwidth==0.2.5
+webencodings==0.5.1
 websockets==10.2
 wsproto==1.1.0
 xvfbwrapper==0.2.9

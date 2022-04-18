@@ -28,10 +28,27 @@ VIDEO_TAGS = (
     "source",
     'source[type="application/x-mpegURL"]',
     'source[type="video/mp4"]',
+    "href",
 )
 AUDIO_TAGS = ("audio", "source", "a")
 
-IMAGE_EXTENSIONS = (".jpg", ".gif", ".png", ".bmp", ".svg", ".webp", ".ico")
+IMAGE_EXTENSIONS = (
+    ".jpg",
+    ".gif",
+    ".png",
+    ".bmp",
+    ".svg",
+    ".webp",
+    ".ico",
+    ".jpeg",
+    ".bat",
+    ".heif",
+    ".jfif",
+    ".pjpeg",
+    ".pjp",
+    ".svg",
+    ".webp",
+)
 VIDEO_EXTENSION = (
     ".mp4",
     ".webm",

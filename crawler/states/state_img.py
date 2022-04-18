@@ -115,6 +115,9 @@ class ImageState(State):
                 elif len(uri := re.findall(r"data:image/gif;base64,(.*)", img.src)) > 0:
                     encoded = uri[0]
                     content = base64.b64decode(str(encoded))
+                elif len(uri := re.findall(r"data:image/png;base64,(.*)", img.src)) > 0:
+                    encoded = uri[0]
+                    content = base64.b64decode(str(encoded))
                 else:
                     content = download_content(url=img.src)
 
