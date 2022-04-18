@@ -1,7 +1,7 @@
 import re
 import base64
 from dataclasses import dataclass
-from typing import List, Union, Any, Dict
+from typing import List, Union, Generator
 
 from bs4 import BeautifulSoup
 from requests_html import HTML
@@ -11,7 +11,7 @@ from crawler.config import logger, IMAGE_TAGS
 from crawler.misc.context import ImageContextVars
 from crawler.utils import (
     add_http_if_missing,
-    extract_file_name_url,
+    get_filename,
     hash_name,
     str_to_int,
     get_src_url,
@@ -26,7 +26,6 @@ class Image:
 
     src: str
     name: str
-    size: int
     height: int
     width: int
     alt: str
@@ -45,9 +44,7 @@ class ImageCollection:
         self.images: List[Image] = []
         self.ctx = ctx
         self.scheme = scheme
-        self.disable_size_restrictions = (
-            True if self.ctx.height == -1 or self.ctx.width == -1 else False
-        )
+        self.disable_size_restrictions = True if self.ctx.height == -1 else False
 
         self.select_image_tags(html=html)
         self.extract_img_tags()
@@ -55,7 +52,7 @@ class ImageCollection:
     def __len__(self) -> int:
         return len(self.images)
 
-    def __iter__(self) -> Image:
+    def __iter__(self) -> Generator:
         for img in self.images:
             yield img
 
@@ -67,10 +64,8 @@ class ImageCollection:
             else:
                 self.img_tags += html.select(tag)
 
-    def filter_on_size_restrictions(self, height: int, width: int, size: int) -> bool:
-        if ((self.ctx.height <= height) and (self.ctx.width <= width)) or (
-            self.ctx.size <= size
-        ):
+    def filter_on_size_restrictions(self, height: int, width: int) -> bool:
+        if (self.ctx.height <= height) and (self.ctx.width <= width):
             return True
         return False
 
@@ -85,14 +80,13 @@ class ImageCollection:
 
                 src = evaluate_src_url(src)
                 src = add_http_if_missing(src, scheme=self.scheme)
-                name = hash_name(extract_file_name_url(src))
+                name = hash_name(get_filename(src))
                 alt = attrs.get("alt", "no-capture")
                 height = str_to_int(attrs.get("height", "0"))
                 width = str_to_int(attrs.get("width", "0"))
-                size = str_to_int(attrs.get("size", "0"))
 
                 match_size_restrictions = self.filter_on_size_restrictions(
-                    height=height, width=width, size=size
+                    height=height, width=width
                 )
 
                 if match_size_restrictions or self.disable_size_restrictions:
@@ -102,7 +96,6 @@ class ImageCollection:
                             name=name,
                             height=height,
                             width=width,
-                            size=size,
                             alt=alt,
                         )
                     )
@@ -115,7 +108,11 @@ class ImageState(State):
         succes_ctr = 0
         for img in self.collection:
             try:
+                # TODO: Make generic solution for data:image encoded images
                 if len(uri := re.findall(r"data:image/jpeg;base64,(.*)", img.src)) > 0:
+                    encoded = uri[0]
+                    content = base64.b64decode(str(encoded))
+                elif len(uri := re.findall(r"data:image/gif;base64,(.*)", img.src)) > 0:
                     encoded = uri[0]
                     content = base64.b64decode(str(encoded))
                 else:

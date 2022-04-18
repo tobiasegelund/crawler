@@ -1,8 +1,8 @@
 import sys
 import click
 
-from crawler.states import ImageState
-from crawler.misc import CLISettings, ImageContextVars
+from crawler.states import ImageState, VideoState
+from crawler.misc import CLISettings, ImageContextVars, VideoContextVars
 from crawler.config import logger
 from crawler.main import crawl_site
 
@@ -14,9 +14,29 @@ def audio():
 
 
 @click.command()
-def video():
+@CLISettings.url()
+@CLISettings.size()
+@CLISettings.render()
+@CLISettings.directory()
+@CLISettings.level()
+def video(url: str, size: int, render: bool, directory: str, level: int):
     """Scrape video files"""
-    print("Under implementation - will be available in future updates")
+    if url is None:
+        logger.info("[Error] Must specify URL to scrape by using --url or -u arguments")
+        sys.exit()
+
+    logger.info(f"[Info] Maximum size of videos to scrape is {size} MB")
+    logger.info(f"[Info] Use --size to change the maximum size")
+
+    video_context = VideoContextVars(state=VideoState, size=size)
+
+    crawl_site(
+        url=url,
+        level=level,
+        render=render,
+        save_folder=directory,
+        state_context=video_context,
+    )
 
 
 @click.command()
@@ -26,30 +46,23 @@ def video():
 @CLISettings.render()
 @CLISettings.directory()
 @CLISettings.level()
-def image(
-    url: str,
-    height: int,
-    width: int,
-    render: bool,
-    directory: str,
-    level: int,
-):
+def image(url: str, height: int, width: int, render: bool, directory: str, level: int):
+    """Scrape image files"""
     if url is None:
         logger.info("[Error] Must specify URL to scrape by using --url or -u arguments")
         sys.exit()
 
-    if height == -1 or width == -1:
+    if height == -1:
         logger.info(f"[Info] Size restrictions are disabled")
+        logger.info(
+            f"[Info] Use --height and --width arguments to set size restrictions of minimum height and width of images"
+        )
     else:
         logger.info(f"[Info] Minimum height of images to scrape is {height}")
         logger.info(f"[Info] Minimum width of images to scrape is {width}")
         logger.info("[Info] Set height to -1 by -h -1 to disable size restrictions")
 
-    """Scrape image files"""
-    size = int((height + width) / 1.5)
-    img_context = ImageContextVars(
-        state=ImageState, size=size, height=height, width=width
-    )
+    img_context = ImageContextVars(state=ImageState, height=height, width=width)
 
     crawl_site(
         url=url,

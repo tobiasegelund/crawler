@@ -14,8 +14,8 @@ class CLISettings:
             "--height",
             "-h",
             type=int,
-            default=150,
-            help="[Optional] Minimum height of the images. Default set to 150. Note, by setting it to -1 disables size restrictions.",
+            default=-1,
+            help="[Optional] Minimum height of images. Default is -1. Note, by setting it to -1 disables size restrictions.",
         )
 
     @classmethod
@@ -24,8 +24,18 @@ class CLISettings:
             "--width",
             "-w",
             type=int,
-            default=150,
-            help="[Optional] Minimum width of the images. Default set to 150. Note, by setting it to -1 disables size restrictions.",
+            default=50,
+            help="[Optional] Minimum width of images. Default is 50.",
+        )
+
+    @classmethod
+    def size(cls):
+        return click.option(
+            "--size",
+            "-s",
+            type=int,
+            default=50,
+            help="[Optional] Maximum size in MBs. Default is 50 MB.",
         )
 
     @classmethod
@@ -36,7 +46,7 @@ class CLISettings:
             type=bool,
             default=False,
             is_flag=True,
-            help="""[Optional] Render javascript content. Default set to False. Flag by -r or --render
+            help="""[Optional] Render javascript content. Default False. Flag by -r or --render
             to use the feature. Note that it increases the speed of crawl and scrape.""",
         )
 
@@ -47,7 +57,7 @@ class CLISettings:
             "-d",
             type=str,
             default="",
-            help="[Optional] Choose directory to save the files. Default is set to domain name.",
+            help="[Optional] Choose directory to save the files. Default is domain name.",
         )
 
     @classmethod
@@ -57,7 +67,7 @@ class CLISettings:
             "-l",
             type=int,
             default=1,
-            help="""[Optional] Top-down level in links to crawl. Default set to level 1,
+            help="""[Optional] Top-down level in links to crawl. Default is level 1,
             i.e. scrape only the defined url. Level 2 crawl all related links recursively
             from the specified URL within the domain name and scrape the relevant files on
             those pages. Increase in level searches the domain name heuristically, though it
@@ -72,7 +82,7 @@ class CLISettings:
             "-w",
             type=int,
             default=1,
-            help="""[Optional] Number of CPU cores to use. Default set to 1. Maximum of one
+            help="""[Optional] Number of CPU cores to use. Default is 1. Maximum of one
             CPU core per url to avoid DDoS attack on servers. Thus, urls to crawl must be greater
             than or equal to the number of workers in use. Greater number of workers than
             urls will not enchance any speed of crawling.

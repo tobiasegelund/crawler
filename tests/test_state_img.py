@@ -1,7 +1,5 @@
 import pytest
 from crawler.states.state_img import *
-from crawler.config import DEBUG_MODE
-from .conftest import image_context_vars, html
 
 
 class TestImageCollection:
@@ -23,7 +21,7 @@ class TestImageState:
     # def test_execute(self, state, context_vars):
     #     state.execute(ctx=context_vars)
 
-    @pytest.mark.skipif(DEBUG_MODE, reason="Download time")
-    def test_download(self, state, collection):
-        state.collection = collection
-        state.download()
+    # @pytest.mark.skipif(DEBUG_MODE, reason="Download time")
+    # def test_download(self, state, collection):
+    #     state.collection = collection
+    #     state.download()

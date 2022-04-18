@@ -23,11 +23,47 @@ TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%Y%m%d")
 
 IMAGE_TAGS = ("img", "source", "picture")
-VIDEO_TAGS = ()
+VIDEO_TAGS = ("video", "source")
 AUDIO_TAGS = ()
 
 IMAGE_EXTENSIONS = (".jpg", ".gif", ".png", ".bmp", ".svg", ".webp", ".ico")
-VIDEO_EXTENSION = ()
+VIDEO_EXTENSION = (
+    ".mp4",
+    ".webm",
+    ".mkv",
+    ".flv",
+    ".vob",
+    ".ogg",
+    ".ogv",
+    ".gif",
+    ".gifv",
+    ".drc",
+    ".flv",
+    ".f4v",
+    ".f4p",
+    ".f4a",
+    ".f4b",
+    ".m4v",
+    ".mpg",
+    ".mpeg",
+    ".m2v",
+    ".svi",
+    ".3gp",
+    ".mxf",
+    ".roq",
+    ".amv",
+    ".asf",
+    ".avi",
+    ".mng",
+    ".viv",
+    ".rmvb",
+    ".wmv",
+    ".mov",
+    ".qt",
+    ".MTS",
+    ".M2TS",
+    ".TS",
+)
 AUDIO_EXTENTIONS = ()
 
 # DEBUG_MODE = True if bool(os.environ.get("DEBUG_MODE")) is True else False

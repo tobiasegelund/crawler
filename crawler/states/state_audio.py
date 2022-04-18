@@ -8,12 +8,7 @@ from requests_html import HTML
 from crawler.config import logger
 from crawler.misc.context import AudioContextVars
 from .state import State
-from crawler.utils import (
-    add_http_if_missing,
-    extract_file_name_url,
-    hash_name,
-    get_src_url,
-)
+from crawler.utils import add_http_if_missing, get_filename, hash_name, get_src_url
 
 
 @dataclass
@@ -63,7 +58,7 @@ class AudioCollection:
                 if src is None:
                     continue
                 src = add_http_if_missing(src, scheme=self.scheme)
-                name = hash_name(extract_file_name_url(src))
+                name = hash_name(get_filename(src))
                 alt = attrs.get("alt", "no-capture")
 
                 self.audios.append(Audio(src=src, name=name, alt=alt))

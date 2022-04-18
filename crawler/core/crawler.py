@@ -69,7 +69,9 @@ class Crawler:
         return links
 
     def scrape(self, html: BeautifulSoup) -> None:
-        scraper = Scraper(html=html, scheme=self.scheme, save_dir=self.save_dir)
+        scraper = Scraper(
+            html=html, website=self.website, scheme=self.scheme, save_dir=self.save_dir
+        )
         scraper.execute(ctx_vars=self.ctx_vars.state_context)
 
     def execute(self) -> None:

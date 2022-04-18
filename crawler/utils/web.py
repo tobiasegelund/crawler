@@ -30,13 +30,13 @@ def validate_response(response: requests.models.Response) -> None:
 
 
 def request_url_raw(url: str) -> requests.models.Response:
-    response = requests.get(url, headers=HEADERS)
+    response = requests.get(url, headers=HEADERS, timeout=10)
     return response
 
 
 async def request_url_js(url: str) -> HTMLResponse:
     asession = AsyncHTMLSession()
-    r = await asession.get(url)
+    r = await asession.get(url, timeout=10)
     await r.html.arender()
     return r
 
@@ -73,7 +73,7 @@ def url_extractor_raw(html: BeautifulSoup, website: str) -> List[str]:
             eval_ = eval_domain_name(url=link, website=website)
             if eval_:
                 if eval_ == 1:  # TODO: HOTFIX - BETTER NAMING
-                    link = construct_url_link(url=link, website=website)
+                    link = construct_url_link(uri=link, website=website)
                 links.append(link)
 
     return links
@@ -86,7 +86,7 @@ def url_extractor_js(html: HTML, website: str) -> List[str]:
         eval_ = eval_domain_name(url=link, website=website)
         if eval_:
             if eval_ == 1:  # TODO: HOTFIX - BETTER NAMING
-                link = construct_url_link(url=link, website=website)
+                link = construct_url_link(uri=link, website=website)
             urls.append(link)
 
     return urls
@@ -105,7 +105,7 @@ def construct_website(scheme: str, domain: str) -> str:
 
 
 def get_src_url(attrs: Dict[str, Any]) -> Union[None, str]:
-    src_codes = ["src", "data-src", "srcset", "data-srcset"]
+    src_codes = ["src", "data-src", "srcset", "data-srcset", "source"]
     for code in src_codes:
         src = attrs.get(code, None)
         if src is not None:
@@ -118,27 +118,16 @@ def evaluate_src_url(src: str):
     # Hotfix
     if bool(re.search(r"data:image/jpeg;base64,(.*)", src)):
         return src
-
-    if len(list_of_src := src.split(",")) > 1:
+    elif bool(re.search(r"data:image/gif;base64,(.*)", src)):
+        return src
+    elif len(list_of_src := src.split(",")) > 1:
         largest_src = list_of_src[-1]
         return largest_src.split()[0]  # [url, width]
-    return src
+    else:
+        return src
 
 
 @retry(retries=1)
 def download_content(url: str) -> bytes:
-    content = requests.get(url).content
+    content = requests.get(url, timeout=10).content
     return content
-
-
-#  https://stackoverflow.com/questions/35842873/is-there-a-way-to-download-a-video-from-a-webpage-with-python
-# def download_file(url):
-#     local_filename = url.split("/")[-1]
-#     # NOTE the stream=True parameter
-#     r = requests.get(url, stream=True)
-#     with open(local_filename, "wb") as f:
-#         for chunk in r.iter_content(chunk_size=1024):
-#             if chunk:  # filter out keep-alive new chunks
-#                 f.write(chunk)
-#                 # f.flush() commented by recommendation from J.F.Sebastian
-#     return local_filename

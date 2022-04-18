@@ -14,7 +14,6 @@ class StateContextVars:
 
 @dataclass
 class ImageContextVars(StateContextVars):
-    size: int
     height: int
     width: int
 
