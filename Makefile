@@ -1,11 +1,11 @@
 venv:
-		python3 -m venv env; source env/bin/activate
+		python3 -m venv env; source env/bin/activate && pip install --upgrade pip && pip install -r requirements/dev.txt
 
 develop:
-		python3 setup.py develop
+		env/bin/python setup.py develop
 
 install:
-		python3 setup.py install
-
-install-venv:
 		env/bin/python setup.py install
+
+clean:
+	rm -rf env

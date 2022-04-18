@@ -1,0 +1,8 @@
+-r base.txt
+
+flake8
+black
+ipython
+pytest
+jupyter-client
+jupyter-core
