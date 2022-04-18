@@ -38,8 +38,12 @@ def str_to_int(name: str) -> int:
 
 
 def get_extension(filename: str) -> str:
-    _, extension = filename.split(".")
-    return extension
+    split = filename.split(".")
+    if len(split) == 2:
+        _, extension = split
+        return "." + extension
+    else:
+        return ".NOEXTENSION"
 
 
 def get_filename(url: str) -> str:

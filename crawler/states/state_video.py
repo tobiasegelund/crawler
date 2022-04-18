@@ -69,8 +69,7 @@ class VideoCollection:
                 src = construct_url_link(uri=src, website=self.website)
                 filename = get_filename(url=src)
                 extension = get_extension(filename=filename)
-                # filename = hash_name(filename)
-                if extension in VIDEO_EXTENSION:
+                if extension not in VIDEO_EXTENSION:
                     continue
                 alt = attrs.get("alt", "no-capture")
 

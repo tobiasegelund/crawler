@@ -1,16 +1,41 @@
 import sys
 import click
 
-from crawler.states import ImageState, VideoState
-from crawler.misc import CLISettings, ImageContextVars, VideoContextVars
+from crawler.states import ImageState, VideoState, AudioState
+from crawler.misc import (
+    CLISettings,
+    ImageContextVars,
+    VideoContextVars,
+    AudioContextVars,
+)
 from crawler.config import logger
 from crawler.main import crawl_site
 
 
 @click.command()
-def audio():
+@CLISettings.url()
+@CLISettings.size()
+@CLISettings.render()
+@CLISettings.directory()
+@CLISettings.level()
+def audio(url: str, size: int, render: bool, directory: str, level: int):
     """Scrape audio files"""
-    print("Under implementation - will be available in future updates")
+    if url is None:
+        logger.info("[Error] Must specify URL to scrape by using --url or -u arguments")
+        sys.exit()
+
+    logger.info(f"[Info] Maximum size of audio files to scrape is {size} MB")
+    logger.info(f"[Info] Use --size to change the maximum size")
+
+    video_context = AudioContextVars(state=AudioState, size=size)
+
+    crawl_site(
+        url=url,
+        level=level,
+        render=render,
+        save_folder=directory,
+        state_context=video_context,
+    )
 
 
 @click.command()
@@ -25,7 +50,7 @@ def video(url: str, size: int, render: bool, directory: str, level: int):
         logger.info("[Error] Must specify URL to scrape by using --url or -u arguments")
         sys.exit()
 
-    logger.info(f"[Info] Maximum size of videos to scrape is {size} MB")
+    logger.info(f"[Info] Maximum size of video files to scrape is {size} MB")
     logger.info(f"[Info] Use --size to change the maximum size")
 
     video_context = VideoContextVars(state=VideoState, size=size)

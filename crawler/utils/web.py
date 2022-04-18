@@ -105,7 +105,7 @@ def construct_website(scheme: str, domain: str) -> str:
 
 
 def get_src_url(attrs: Dict[str, Any]) -> Union[None, str]:
-    src_codes = ["src", "data-src", "srcset", "data-srcset", "source"]
+    src_codes = ["src", "data-src", "srcset", "data-srcset", "source", "href"]
     for code in src_codes:
         src = attrs.get(code, None)
         if src is not None:

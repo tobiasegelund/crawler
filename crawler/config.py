@@ -23,8 +23,13 @@ TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%Y%m%d")
 
 IMAGE_TAGS = ("img", "source", "picture")
-VIDEO_TAGS = ("video", "source")
-AUDIO_TAGS = ()
+VIDEO_TAGS = (
+    "video",
+    "source",
+    'source[type="application/x-mpegURL"]',
+    'source[type="video/mp4"]',
+)
+AUDIO_TAGS = ("audio", "source", "a")
 
 IMAGE_EXTENSIONS = (".jpg", ".gif", ".png", ".bmp", ".svg", ".webp", ".ico")
 VIDEO_EXTENSION = (
@@ -60,10 +65,51 @@ VIDEO_EXTENSION = (
     ".wmv",
     ".mov",
     ".qt",
-    ".MTS",
-    ".M2TS",
-    ".TS",
 )
-AUDIO_EXTENTIONS = ()
+AUDIO_EXTENTIONS = (
+    ".3gp",
+    ".aa",
+    ".aac",
+    ".aax",
+    ".act",
+    ".aiff",
+    ".alac",
+    ".amr",
+    ".ape",
+    ".au",
+    ".awb",
+    ".dss",
+    ".dvf",
+    ".flac",
+    ".gsm",
+    ".iklax",
+    ".ivs",
+    ".m4a",
+    ".m4b",
+    ".m4p",
+    ".mmf",
+    ".mp3",
+    ".mpc",
+    ".msv",
+    ".nmf",
+    ".ogg",
+    ".oga",
+    ".mogg",
+    ".opus",
+    ".ra",
+    ".rm",
+    ".raw",
+    ".rf64",
+    ".sln",
+    ".tta",
+    ".voc",
+    ".vox",
+    ".wav",
+    ".wma",
+    ".wv",
+    ".webm",
+    ".8svx",
+    ".cda",
+)
 
 # DEBUG_MODE = True if bool(os.environ.get("DEBUG_MODE")) is True else False
