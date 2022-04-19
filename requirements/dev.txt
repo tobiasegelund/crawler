@@ -6,3 +6,4 @@ ipython
 pytest
 jupyter-client
 jupyter-core
+tox
