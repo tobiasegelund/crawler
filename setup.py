@@ -10,8 +10,16 @@ setup(
     author="Tobias Egelund",
     packages=find_packages(exclude=["tests*"]),
     description="""
-    A CLI program to crawl and scrape websites for scpecific types
-    of files, i.e. images, videos or audio files
+    A micro crawl tool to scrape audio, video and image files from websites
+    """,
+    classifiers = """
+        Environment :: Web Environment
+        Framework :: Crawler
+        Intended Audience :: Developers
+        Operating System :: OS Independent
+        Programming Language :: Python :: 3.8
+        Programming Language :: Python :: 3.9
+        Topic ::Web Crawl :: Web Scrape :: Application Frameworks
     """,
     install_requires=[
         "bs4>=0.0.1",
