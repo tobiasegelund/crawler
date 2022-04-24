@@ -22,14 +22,12 @@ class Crawler:
 
     def __init__(self, ctx_vars):
         assert isinstance(ctx_vars, CrawlerContextVars)
-
         self.ctx_vars = ctx_vars
-
-    def create_save_directories(self) -> None:
-        self.save_dir = Path().joinpath(self.ctx_vars.dir_name)
-        if self.ctx_vars.dir_name == "":
-            self.save_dir = self.save_dir.joinpath(self.domain)
-        create_dir_if_not_exits(self.save_dir)
+        self.get_parsed_url()
+        self.get_domain()
+        self.get_netloc()
+        self.get_scheme()
+        self.get_website()
 
     def get_parsed_url(self):
         self.parsed_url = urlparse(self.ctx_vars.url)
@@ -39,6 +37,17 @@ class Crawler:
 
     def get_domain(self) -> None:
         self.domain = self.parsed_url.hostname
+
+    def get_netloc(self) -> None:
+        self.netloc = self.parsed_url.netloc
+        if self.netloc[:4] == "www.":
+            self.netloc = self.netloc[4:]
+
+    def create_save_directories(self) -> None:
+        self.save_dir = Path().joinpath(self.ctx_vars.dir_name)
+        if self.ctx_vars.dir_name == "":
+            self.save_dir = self.save_dir.joinpath(self.domain)
+        create_dir_if_not_exits(self.save_dir)
 
     def get_website(self) -> None:
         self.website = construct_website(scheme=self.scheme, domain=self.domain)
@@ -58,8 +67,9 @@ class Crawler:
 
                     logger.info(f"[Crawl] {url}")
                     html = fetch_html(response=response)
-                    urls = url_extractor(html=html, website=self.website)
-
+                    urls = url_extractor(
+                        html=html, website=self.website, netloc=self.netloc
+                    )
                     level += 1
                     links = self.crawl(urls=urls, level=level, links=links)
                     links.update({url: html})
@@ -75,9 +85,6 @@ class Crawler:
         scraper.execute(ctx_vars=self.ctx_vars.state_context)
 
     def execute(self) -> None:
-        self.get_parsed_url()
-        self.get_domain()
-        self.get_scheme()
         if self.ctx_vars.render:
             logger.info(
                 f"[Info] Render javascript content - Be aware of increase in speed of crawl"
@@ -91,7 +98,6 @@ class Crawler:
                 f"[Info] Downloaded files are written to folder >>> {self.domain} <<<"
             )
 
-        self.get_website()
         self.create_save_directories()
 
         logger.info(f"[Info] Start crawl of >>> {self.ctx_vars.url} <<<")

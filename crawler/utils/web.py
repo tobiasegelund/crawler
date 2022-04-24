@@ -58,19 +58,21 @@ def fetch_html_render_js(response: HTMLResponse) -> HTML:
     return response.html
 
 
-def url_extractor(html: Union[BeautifulSoup, HTML], website: str) -> List[str]:
+def url_extractor(
+    html: Union[BeautifulSoup, HTML], website: str, netloc: str
+) -> List[str]:
     if isinstance(html, HTML):
-        return url_extractor_js(html=html, website=website)
-    return url_extractor_raw(html=html, website=website)
+        return url_extractor_js(html=html, website=website, netloc=netloc)
+    return url_extractor_raw(html=html, website=website, netloc=netloc)
 
 
-def url_extractor_raw(html: BeautifulSoup, website: str) -> List[str]:
+def url_extractor_raw(html: BeautifulSoup, website: str, netloc: str) -> List[str]:
     tags = html.select("a")
     links = list()
     for tag in tags:
         link = tag.attrs.get("href", None)
         if link is not None:
-            eval_ = eval_domain_name(url=link, website=website)
+            eval_ = eval_domain_name(url=link, netloc=netloc)
             if eval_:
                 if eval_ == 1:  # TODO: HOTFIX - BETTER NAMING
                     link = construct_url_link(uri=link, website=website)
@@ -79,11 +81,11 @@ def url_extractor_raw(html: BeautifulSoup, website: str) -> List[str]:
     return links
 
 
-def url_extractor_js(html: HTML, website: str) -> List[str]:
+def url_extractor_js(html: HTML, website: str, netloc: str) -> List[str]:
     urls = list()
     links = html.links
     for link in links:
-        eval_ = eval_domain_name(url=link, website=website)
+        eval_ = eval_domain_name(url=link, netloc=netloc)
         if eval_:
             if eval_ == 1:  # TODO: HOTFIX - BETTER NAMING
                 link = construct_url_link(uri=link, website=website)
@@ -92,10 +94,10 @@ def url_extractor_js(html: HTML, website: str) -> List[str]:
     return urls
 
 
-def eval_domain_name(url: str, website: str) -> int:
+def eval_domain_name(url: str, netloc: str) -> int:
     if url[0] == "/":
         return 1
-    elif url[: len(website)] == website:
+    elif bool(re.search(f"{netloc}", url)):
         return 2
     return 0
 
