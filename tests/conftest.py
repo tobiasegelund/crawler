@@ -1,11 +1,19 @@
-import datetime
+from pathlib import Path
+from urllib.parse import urlparse
+from unittest.mock import Mock
 
 import pytest
 import requests
 from bs4 import BeautifulSoup
 
-from crawler.misc import ImageContextVars, CrawlerContextVars
-from crawler.states import ImageState
+from crawler.misc import (
+    ImageContextVars,
+    CrawlerContextVars,
+    VideoContextVars,
+    AudioContextVars,
+)
+from crawler.states import ImageState, AudioState, VideoState
+from crawler.utils import construct_website
 
 
 @pytest.fixture(scope="session")
@@ -16,15 +24,44 @@ def html():
 
 
 @pytest.fixture(scope="session")
-def image_context_vars():
+def website():
     url = "https://en.wikipedia.org/wiki/Manchester_United_F.C."
-    response = requests.get(url)
+    parsed = urlparse(url)
+    yield construct_website(scheme=parsed.scheme, domain=parsed.hostname)
+
+
+@pytest.fixture(scope="session")
+def scheme():
+    url = "https://en.wikipedia.org/wiki/Manchester_United_F.C."
+    parsed = urlparse(url)
+    yield parsed.scheme
+
+
+@pytest.fixture(scope="session")
+def save_dir():
+    yield Path("")
+
+
+@pytest.fixture(scope="session")
+def image_context_vars():
+    mock_state = Mock(spec=ImageState)
     yield ImageContextVars(
-        state=ImageState,
+        state=mock_state,
         width=150,
         height=150,
-        size=300,
     )
+
+
+@pytest.fixture(scope="session")
+def video_context_vars():
+    mock_state = Mock(spec=VideoState)
+    yield VideoContextVars(state=mock_state, size=25)
+
+
+@pytest.fixture(scope="session")
+def audio_context_vars():
+    mock_state = Mock(spec=AudioState)
+    yield AudioContextVars(state=mock_state, size=25)
 
 
 @pytest.fixture(scope="session")
@@ -33,9 +70,7 @@ def crawler_context_vars():
         url="https://en.wikipedia.org/wiki/Manchester_United_F.C.",
         dir_name="",
         level=1,
-        n_workers=1,
-        state_context=ImageContextVars(
-            state=ImageState, size=150 * 150, height=150, width=150
-        ),
+        render=False,
+        state_context=ImageContextVars(state=ImageState, height=150, width=150),
     )
     yield ctx_vars

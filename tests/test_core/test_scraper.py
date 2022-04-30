@@ -1,18 +1,36 @@
 from pathlib import Path
+from unittest.mock import Mock
+
 import pytest
+
 from crawler.core import Scraper
-from crawler.states import ImageState
-from crawler.misc.context import ImageContextVars
-
-from ..conftest import html
 
 
-class TestImageScraper:
-    @pytest.fixture(scope="class")
-    def scraper(self, html) -> Scraper:
-        url = "https://en.wikipedia.org/wiki/Manchester_United_F.C."
-        return Scraper(url=url, html=html, scheme="https", save_dir=Path())
+class TestScraperImage:
+    @pytest.fixture
+    def scraper(self, html, website, scheme, save_dir):
+        yield Scraper(html=html, website=website, scheme=scheme, save_dir=save_dir)
 
-    @pytest.mark.xfail
-    def test_execute(self, scraper) -> None:
-        scraper.execute()
+    def test_execute(self, scraper, image_context_vars) -> None:
+        scraper.execute(ctx_vars=image_context_vars)
+        scraper._state.execute.assert_called_once()
+
+
+class TestScraperVideo:
+    @pytest.fixture
+    def scraper(self, html, website, scheme, save_dir):
+        yield Scraper(html=html, website=website, scheme=scheme, save_dir=save_dir)
+
+    def test_execute(self, scraper, video_context_vars) -> None:
+        scraper.execute(ctx_vars=video_context_vars)
+        scraper._state.execute.assert_called_once()
+
+
+class TestScraperAudio:
+    @pytest.fixture
+    def scraper(self, html, website, scheme, save_dir):
+        yield Scraper(html=html, website=website, scheme=scheme, save_dir=save_dir)
+
+    def test_execute(self, scraper, audio_context_vars) -> None:
+        scraper.execute(ctx_vars=audio_context_vars)
+        scraper._state.execute.assert_called_once()
