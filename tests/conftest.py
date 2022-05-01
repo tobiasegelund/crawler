@@ -11,9 +11,9 @@ from crawler.misc import (
     CrawlerContextVars,
     VideoContextVars,
     AudioContextVars,
+    Website,
 )
 from crawler.states import ImageState, AudioState, VideoState
-from crawler.utils import construct_website
 
 
 @pytest.fixture(scope="session")
@@ -21,13 +21,6 @@ def html():
     url = "https://en.wikipedia.org/wiki/Manchester_United_F.C."
     response = requests.get(url)
     yield BeautifulSoup(response.content, "html.parser")
-
-
-@pytest.fixture(scope="session")
-def website():
-    url = "https://en.wikipedia.org/wiki/Manchester_United_F.C."
-    parsed = urlparse(url)
-    yield construct_website(scheme=parsed.scheme, domain=parsed.hostname)
 
 
 @pytest.fixture(scope="session")
@@ -74,3 +67,9 @@ def crawler_context_vars():
         state_context=ImageContextVars(state=ImageState, height=150, width=150),
     )
     yield ctx_vars
+
+
+@pytest.fixture(scope="session")
+def website():
+    url = "https://en.wikipedia.org/wiki/Manchester_United_F.C."
+    yield Website(url=url)

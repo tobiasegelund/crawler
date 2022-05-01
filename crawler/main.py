@@ -2,7 +2,7 @@ from typing import List
 
 from crawler.utils import prepare_url
 from crawler.core import Crawler
-from crawler.misc import CrawlerContextVars, StateContextVars
+from crawler.misc import CrawlerContextVars, StateContextVars, Website
 
 
 def crawl_site(
@@ -49,8 +49,9 @@ def crawl_site(
         level=level,
         state_context=state_context,
     )
+    website = Website(url=url)
 
-    crawler = Crawler(ctx_vars=ctx_vars)
+    crawler = Crawler(ctx_vars=ctx_vars, website=website)
     crawler.execute()
 
 
@@ -90,6 +91,7 @@ def crawl_sites(
             level=level,
             state_context=state_context,
         )
+        website = Website(url=url)
 
-        crawler = Crawler(ctx_vars=ctx_vars)
+        crawler = Crawler(ctx_vars=ctx_vars, website=website)
         crawler.execute()

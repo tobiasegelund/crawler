@@ -102,10 +102,6 @@ def eval_domain_name(url: str, netloc: str) -> int:
     return 0
 
 
-def construct_website(scheme: str, domain: str) -> str:
-    return scheme + "://" + domain
-
-
 def get_src_url(attrs: Dict[str, Any]) -> Union[None, str]:
     src_codes = ["src", "data-src", "srcset", "data-srcset", "source", "href"]
     for code in src_codes:
