@@ -72,7 +72,7 @@ class Crawler:
     def execute(self) -> None:
         if self.ctx_vars.render:
             logger.info(
-                f"[Info] Render javascript content - Be aware of increase in speed of crawl"
+                f"[Info] Render javascript content, it may slow down the speed of crawling"
             )
         if self.ctx_vars.dir_name != "":
             logger.info(

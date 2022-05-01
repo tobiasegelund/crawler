@@ -1,4 +1,5 @@
 import sys
+from typing import Tuple
 import click
 
 from crawler.states import ImageState, VideoState, AudioState
@@ -9,7 +10,7 @@ from crawler.misc import (
     AudioContextVars,
 )
 from crawler.config import logger
-from crawler.main import crawl_site
+from crawler.main import crawl_sites
 
 
 @click.command()
@@ -18,7 +19,7 @@ from crawler.main import crawl_site
 @CLISettings.render()
 @CLISettings.directory()
 @CLISettings.level()
-def audio(url: str, size: int, render: bool, directory: str, level: int):
+def audio(url: Tuple[str], size: int, render: bool, directory: str, level: int):
     """Scrape audio files"""
     if url is None:
         logger.info("[Error] Must specify URL to scrape by using --url or -u arguments")
@@ -29,12 +30,13 @@ def audio(url: str, size: int, render: bool, directory: str, level: int):
 
     video_context = AudioContextVars(state=AudioState, size=size)
 
-    crawl_site(
-        url=url,
+    crawl_sites(
+        urls=url,
         level=level,
         render=render,
         save_folder=directory,
         state_context=video_context,
+        n_workers=1,
     )
 
 
@@ -44,7 +46,7 @@ def audio(url: str, size: int, render: bool, directory: str, level: int):
 @CLISettings.render()
 @CLISettings.directory()
 @CLISettings.level()
-def video(url: str, size: int, render: bool, directory: str, level: int):
+def video(url: Tuple[str], size: int, render: bool, directory: str, level: int):
     """Scrape video files"""
     if url is None:
         logger.info("[Error] Must specify URL to scrape by using --url or -u arguments")
@@ -55,12 +57,13 @@ def video(url: str, size: int, render: bool, directory: str, level: int):
 
     video_context = VideoContextVars(state=VideoState, size=size)
 
-    crawl_site(
-        url=url,
+    crawl_sites(
+        urls=url,
         level=level,
         render=render,
         save_folder=directory,
         state_context=video_context,
+        n_workers=1,
     )
 
 
@@ -71,7 +74,9 @@ def video(url: str, size: int, render: bool, directory: str, level: int):
 @CLISettings.render()
 @CLISettings.directory()
 @CLISettings.level()
-def image(url: str, height: int, width: int, render: bool, directory: str, level: int):
+def image(
+    url: Tuple[str], height: int, width: int, render: bool, directory: str, level: int
+):
     """Scrape image files"""
     if url is None:
         logger.info("[Error] Must specify URL to scrape by using --url or -u arguments")
@@ -89,12 +94,13 @@ def image(url: str, height: int, width: int, render: bool, directory: str, level
 
     img_context = ImageContextVars(state=ImageState, height=height, width=width)
 
-    crawl_site(
-        url=url,
+    crawl_sites(
+        urls=url,
         level=level,
         render=render,
         save_folder=directory,
         state_context=img_context,
+        n_workers=1,
     )
 
 

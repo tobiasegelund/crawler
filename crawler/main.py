@@ -1,4 +1,4 @@
-from typing import List
+from typing import Tuple
 
 from crawler.utils import prepare_url
 from crawler.core import Crawler
@@ -56,7 +56,7 @@ def crawl_site(
 
 
 def crawl_sites(
-    urls: List[str],
+    urls: Tuple[str],
     level: int,
     render: bool,
     save_folder: str,
@@ -67,7 +67,7 @@ def crawl_sites(
     High-level API to a crawl sites and scrape files of stated types
 
     Args:
-        urls, List, string: The urls to crawl
+        urls, Tuple, string: The urls to crawl
         level, int: The level in search layer of the hierarchy to crawl, i.e. how many
             layers down to crawl
         render, bool: render javascript content - it may be necessary to do in order to
@@ -80,18 +80,14 @@ def crawl_sites(
     Usage:
         >>> crawl_sites(urls=[dr.dk, tv2.dk], level=1, render=False, save_folder="", state_context=ImageContext())
     """
-    assert isinstance(urls, List), f"url is not list but {type(urls)}"
+    assert isinstance(urls, Tuple), f"url is not list but {type(urls)}"
     assert isinstance(n_workers, int), f"n_workers is not int but {type(int)}"
 
     for url in urls:
-        ctx_vars = CrawlerContextVars(
+        crawl_site(
             url=url,
-            dir_name=save_folder,
-            render=render,
             level=level,
+            render=render,
+            save_folder=save_folder,
             state_context=state_context,
         )
-        website = Website(url=url)
-
-        crawler = Crawler(ctx_vars=ctx_vars, website=website)
-        crawler.execute()
