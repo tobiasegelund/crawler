@@ -12,16 +12,24 @@ Currently, the program is a beta version and cannot capture all possible sceneri
 git clone git@github.com:tobiasegelund/crawler.git
 ```
 
-### Build
+### Install
 ```console
 make install
+```
+Installation within a virtual environment 
+```console
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements/base.txt
 ```
 
 ### Usage
 ```console
 crawler [image, video, audio] --url https://www.dr.dk
 ```
-Or
+
+### Help
+Please take a look in the help section to view possible options.
 ```console
-python3 crawler [image, video, audio] --url https://www.dr.dk
+crawler [image, video, audio] --help
 ```
