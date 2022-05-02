@@ -105,32 +105,50 @@ class ImageCollection:
 
 class ImageState(State):
     def download(self) -> None:
-        succes_ctr = 0
-        for img in self.collection:
-            try:
-                # TODO: Make generic solution for data:image encoded images
-                if len(uri := re.findall(r"data:image/jpeg;base64,(.*)", img.src)) > 0:
-                    encoded = uri[0]
-                    content = base64.b64decode(str(encoded))
-                elif len(uri := re.findall(r"data:image/gif;base64,(.*)", img.src)) > 0:
-                    encoded = uri[0]
-                    content = base64.b64decode(str(encoded))
-                elif len(uri := re.findall(r"data:image/png;base64,(.*)", img.src)) > 0:
-                    encoded = uri[0]
-                    content = base64.b64decode(str(encoded))
-                else:
-                    content = download_content(url=img.src)
+        if len(self.collection) == 0:
+            logger.info(
+                "[Info] No images were found on the page. Try use --render to render javascript content, it might help identify image tags"
+            )
+        else:
+            succes_ctr = 0
+            for img in self.collection:
+                try:
+                    # TODO: Make generic solution for data:image encoded images
+                    if (
+                        len(uri := re.findall(r"data:image/jpeg;base64,(.*)", img.src))
+                        > 0
+                    ):
+                        encoded = uri[0]
+                        content = base64.b64decode(str(encoded))
+                    elif (
+                        len(uri := re.findall(r"data:image/gif;base64,(.*)", img.src))
+                        > 0
+                    ):
+                        encoded = uri[0]
+                        content = base64.b64decode(str(encoded))
+                    elif (
+                        len(uri := re.findall(r"data:image/png;base64,(.*)", img.src))
+                        > 0
+                    ):
+                        encoded = uri[0]
+                        content = base64.b64decode(str(encoded))
+                    else:
+                        content = download_content(url=img.src)
 
-                with open(self.context.save_dir.joinpath(img.name + ".jpg"), "wb") as f:
-                    f.write(content)
-                logger.info(f"[Download] {img} downloaded successfully")
-                succes_ctr += 1
-            except Exception as e:
-                logger.error(f"[Error] Failed download of {img} due to <{str(e)[:50]}>")
+                    with open(
+                        self.context.save_dir.joinpath(img.name + ".jpg"), "wb"
+                    ) as f:
+                        f.write(content)
+                    logger.info(f"[Download] {img} downloaded successfully")
+                    succes_ctr += 1
+                except Exception as e:
+                    logger.error(
+                        f"[Error] Failed download of {img} due to <{str(e)[:50]}>"
+                    )
 
-        logger.info(
-            f"[INFO] {succes_ctr} out of {len(self.collection)} images were downloaded successfully"
-        )
+            logger.info(
+                f"[INFO] {succes_ctr} out of {len(self.collection)} images were downloaded successfully"
+            )
 
     def execute(self, ctx_vars: ImageContextVars):
         self.collection = ImageCollection(
