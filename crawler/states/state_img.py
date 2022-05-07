@@ -8,7 +8,7 @@ from requests_html import HTML
 
 from .state import State
 from crawler.config import logger, IMAGE_TAGS
-from crawler.misc.context import ImageContextVars
+from crawler.misc import ImageContextVars, Collection
 from crawler.utils import (
     add_http_if_missing,
     get_filename,
@@ -34,27 +34,20 @@ class Image:
         return f"Image<{self.name}, alt: {self.alt}, width: {self.width}, height: {self.height}>"
 
 
-class ImageCollection:
+class ImageCollection(Collection):
     """
     Class to collect relevant images from html class. This includes extract, filter
     and find relevant meta data.
     """
 
     def __init__(self, html: BeautifulSoup, ctx: ImageContextVars, scheme: str) -> None:
-        self.images: List[Image] = []
+        self.files: List[Image] = []
         self.ctx = ctx
         self.scheme = scheme
         self.disable_size_restrictions = True if self.ctx.height == -1 else False
 
         self.select_image_tags(html=html)
         self.extract_img_tags()
-
-    def __len__(self) -> int:
-        return len(self.images)
-
-    def __iter__(self) -> Generator:
-        for img in self.images:
-            yield img
 
     def select_image_tags(self, html: Union[BeautifulSoup, HTML]) -> None:
         self.img_tags = []
@@ -90,7 +83,7 @@ class ImageCollection:
                 )
 
                 if match_size_restrictions or self.disable_size_restrictions:
-                    self.images.append(
+                    self.files.append(
                         Image(
                             src=src,
                             name=name,

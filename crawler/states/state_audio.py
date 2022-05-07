@@ -7,7 +7,7 @@ from requests_html import HTML
 from tqdm import tqdm
 
 from crawler.config import logger, AUDIO_EXTENTIONS, AUDIO_TAGS
-from crawler.misc.context import AudioContextVars
+from crawler.misc import AudioContextVars, Collection
 from .state import State
 from crawler.utils import (
     construct_url_link,
@@ -27,7 +27,7 @@ class Audio:
         return f"Audio<{self.name}, alt: {self.alt}>"
 
 
-class AudioCollection:
+class AudioCollection(Collection):
     """
     Class to collect relevant audios from html class. This includes extract, filter
     and find relevant meta data.
@@ -36,19 +36,12 @@ class AudioCollection:
     def __init__(
         self, html: BeautifulSoup, ctx: AudioContextVars, website: str
     ) -> None:
-        self.audios: List[Audio] = []
+        self.files: List[Audio] = []
         self.ctx = ctx
         self.website = website
 
         self.select_audio_tags(html=html)
         self.extract_audio_tags()
-
-    def __len__(self) -> int:
-        return len(self.audios)
-
-    def __iter__(self) -> Generator:
-        for img in self.audios:
-            yield img
 
     def select_audio_tags(self, html: Union[BeautifulSoup, HTML]) -> None:
         self.audio_tags = []
@@ -72,7 +65,7 @@ class AudioCollection:
                     continue
                 alt = attrs.get("alt", "no-capture")
 
-                self.audios.append(
+                self.files.append(
                     Audio(
                         src=src,
                         name=filename,

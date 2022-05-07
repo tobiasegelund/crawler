@@ -7,11 +7,10 @@ from requests_html import HTML
 from tqdm import tqdm
 
 from crawler.config import logger, VIDEO_TAGS, VIDEO_EXTENSION
-from crawler.misc.context import VideoContextVars
+from crawler.misc import VideoContextVars, Collection
 from .state import State
 from crawler.utils import (
     construct_url_link,
-    hash_name,
     get_src_url,
     get_extension,
     get_filename,
@@ -28,7 +27,7 @@ class Video:
         return f"Video<{self.name}, alt: {self.alt}>"
 
 
-class VideoCollection:
+class VideoCollection(Collection):
     """
     Class to collect relevant videos from html class. This includes extract, filter
     and find relevant meta data.
@@ -37,19 +36,12 @@ class VideoCollection:
     def __init__(
         self, html: BeautifulSoup, ctx: VideoContextVars, website: str
     ) -> None:
-        self.videos: List[Video] = []
+        self.files: List[Video] = []
         self.ctx = ctx
         self.website = website
 
         self.select_video_tags(html=html)
         self.extract_video_tags()
-
-    def __len__(self) -> int:
-        return len(self.videos)
-
-    def __iter__(self) -> Generator:
-        for img in self.videos:
-            yield img
 
     def select_video_tags(self, html: Union[BeautifulSoup, HTML]) -> None:
         self.video_tags = []
@@ -73,7 +65,7 @@ class VideoCollection:
                     continue
                 alt = attrs.get("alt", "no-capture")
 
-                self.videos.append(
+                self.files.append(
                     Video(
                         src=src,
                         name=filename,
