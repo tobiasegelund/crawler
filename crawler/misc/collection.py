@@ -33,7 +33,7 @@ class Image(File):
 
 
 class Collection:
-    # files: List[str] = list()
+    files: List[File] = list()
 
     def __len__(self) -> int:
         return len(self.files)

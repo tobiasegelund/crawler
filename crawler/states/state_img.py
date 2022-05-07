@@ -1,6 +1,6 @@
 import re
 import base64
-from typing import List, Union
+from typing import Union
 
 from bs4 import BeautifulSoup
 from requests_html import HTML
@@ -26,7 +26,6 @@ class ImageCollection(Collection):
     """
 
     def __init__(self, html: BeautifulSoup, ctx: ImageContextVars, scheme: str) -> None:
-        self.files: List[Image] = []
         self.ctx = ctx
         self.scheme = scheme
         self.disable_size_restrictions = True if self.ctx.height == -1 else False

@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import List, Dict, Union
 
-from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from requests_html import HTML
 

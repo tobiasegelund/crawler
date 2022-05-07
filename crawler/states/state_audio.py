@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Union
 
 import requests
 from bs4 import BeautifulSoup
@@ -25,7 +25,6 @@ class AudioCollection(Collection):
     def __init__(
         self, html: BeautifulSoup, ctx: AudioContextVars, website: str
     ) -> None:
-        self.files: List[Audio] = []
         self.ctx = ctx
         self.website = website
 
