@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from typing import List, Union, Generator
+from typing import List, Union
 
 import requests
 from bs4 import BeautifulSoup
@@ -7,7 +6,7 @@ from requests_html import HTML
 from tqdm import tqdm
 
 from crawler.config import logger, AUDIO_EXTENTIONS, AUDIO_TAGS
-from crawler.misc import AudioContextVars, Collection
+from crawler.misc import AudioContextVars, Collection, Audio
 from .state import State
 from crawler.utils import (
     construct_url_link,
@@ -15,16 +14,6 @@ from crawler.utils import (
     get_extension,
     get_filename,
 )
-
-
-@dataclass
-class Audio:
-    src: str
-    name: str
-    alt: str
-
-    def __str__(self):
-        return f"Audio<{self.name}, alt: {self.alt}>"
 
 
 class AudioCollection(Collection):

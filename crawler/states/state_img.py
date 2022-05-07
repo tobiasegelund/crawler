@@ -1,14 +1,13 @@
 import re
 import base64
-from dataclasses import dataclass
-from typing import List, Union, Generator
+from typing import List, Union
 
 from bs4 import BeautifulSoup
 from requests_html import HTML
 
 from .state import State
 from crawler.config import logger, IMAGE_TAGS
-from crawler.misc import ImageContextVars, Collection
+from crawler.misc import ImageContextVars, Collection, Image
 from crawler.utils import (
     add_http_if_missing,
     get_filename,
@@ -18,20 +17,6 @@ from crawler.utils import (
     evaluate_src_url,
     download_content,
 )
-
-
-@dataclass
-class Image:
-    """Class to store meta data of image"""
-
-    src: str
-    name: str
-    height: int
-    width: int
-    alt: str
-
-    def __str__(self):
-        return f"Image<{self.name}, alt: {self.alt}, width: {self.width}, height: {self.height}>"
 
 
 class ImageCollection(Collection):
@@ -140,7 +125,7 @@ class ImageState(State):
                     )
 
             logger.info(
-                f"[INFO] {succes_ctr} out of {len(self.collection)} images were downloaded successfully"
+                f"[Info] {succes_ctr} out of {len(self.collection)} images were downloaded successfully"
             )
 
     def execute(self, ctx_vars: ImageContextVars):
