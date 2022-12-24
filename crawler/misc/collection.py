@@ -33,6 +33,11 @@ class Image(File):
 
 
 class Collection:
+    """Class to store files in memory.
+
+    TODO: Iterable / Iterator -> Research
+    """
+
     files: List[File] = list()
 
     def __len__(self) -> int:
@@ -41,3 +46,6 @@ class Collection:
     def __iter__(self) -> Generator:
         for file in self.files:
             yield file
+
+    def __add__(self, file: File) -> None:
+        self.files.append(file)
